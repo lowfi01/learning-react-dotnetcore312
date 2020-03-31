@@ -1,0 +1,12 @@
+# unwanted folders
+bin/
+obj/
+.vscode/
+.DS_STORE
+
+# authentication keys
+appsetting.json
+
+# will be remade on run also security issue
+*.db
+
