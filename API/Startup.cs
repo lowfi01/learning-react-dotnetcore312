@@ -30,6 +30,15 @@ namespace API
       // Data injection
       services.AddControllers();
 
+      // End CORS - cross origin request blocked
+      services.AddCors(options =>
+      {
+        options.AddPolicy("CorsPolicy", policy =>
+        {
+          policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+        });
+      });
+
       // Pass our data context, which is defined in PERSISTENCE
       // -- IServiceCollection has extension method that defines dbContext
       services.AddDbContext<DataContext>(opt =>
@@ -53,6 +62,9 @@ namespace API
       app.UseRouting();
 
       app.UseAuthorization();
+
+      // Add cors as middleware
+      app.UseCors("CorsPolicy");
 
       app.UseEndpoints(endpoints =>
       {
