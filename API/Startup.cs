@@ -1,16 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Application.Activities;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Persistence;
 
 namespace API
@@ -39,13 +34,26 @@ namespace API
         });
       });
 
-      // Pass our data context, which is defined in PERSISTENCE
+
+      // Dependecy injection.
+      // -- we inject what we need as a service.
+      // -- Requirement is AddControllers()
+
+      // Pass our data context, which is defined in PERSISTENCE as a service -- dependency injection
       // -- IServiceCollection has extension method that defines dbContext
       services.AddDbContext<DataContext>(opt =>
         {
           opt.UseSqlite(Configuration.GetConnectionString("DefaultConnection")); // sqlite takes a connection string
         }
       );
+
+      // Pass MediatR as a service -- dependency injection
+      // -- requires use to pass assemblys which are our handlers
+      // Note - clearly AddMediatR requires a list of handlers, then why only pass one?
+      //      Answer -
+      //      -- this is because it is smart enough to understand that it can find all
+      //      -- the other handlers within that project passed
+      services.AddMediatR(typeof(List.Handler).Assembly);
 
     }
 
