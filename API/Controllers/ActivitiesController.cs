@@ -14,6 +14,10 @@ namespace API.Controllers
   [ApiController]
   public class ActivitiesController : ControllerBase
   {
+    // Thin API controller model
+    // - only handles response and requests
+    // - does not have knowledge about BL within Application/ project
+
     // API controller, requires.
     // -- Root
     // -- API attribute
