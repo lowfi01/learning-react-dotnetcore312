@@ -10,6 +10,7 @@
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
+    "@types/uuid": "^7.0.2",
     "axios": "^0.19.2",
     "components": "^0.1.0",
     "react": "^16.13.1",
@@ -19,7 +20,8 @@
     "semantic-ui-react": "^0.88.2",
     "styled": "^1.0.0",
     "styled-components": "^5.1.0",
-    "typescript": "~3.7.2"
+    "typescript": "~3.7.2",
+    "uuid": "^7.0.3"
   },
   "scripts": {
     "start": "react-scripts start",
