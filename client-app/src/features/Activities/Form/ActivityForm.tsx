@@ -38,25 +38,21 @@ const ActivityForm: React.FC<IProp> = ({
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 
-    // if (activity.id.length === 0) {
-    //   let newActivity = {
-    //     ...activity,
-    //     id: uuid()
-    //   }
-    //   createActivity(newActivity);
-    // } else {
-    //   editActivity(activity)
-    // }
-
-    if (editState) {
-      editActivity(activity)
-    } else {
+    if (activity.id.length === 0) {
       let newActivity = {
         ...activity,
         id: uuid()
       }
       createActivity(newActivity);
+    } else {
+      editActivity(activity)
     }
+
+    // if (editState) {
+    //   editActivity(activity)
+    // } else {
+    //   createActivity(activity);
+    // }
   }
 
   // handle on change for all form inputs

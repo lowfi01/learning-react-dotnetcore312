@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Container } from 'semantic-ui-react';
 
 import IActivity from '../models/activity';
 import { Navbar } from '../../features/Navbar/Navbar';
 import { ActivityDashboard } from '../../features/Activities/Dashboard/ActivityDashboard';
-
+import agent from '../api/agent';
 
 const App: React.FC = () => {
   const [activities, setActivities] = useState<IActivity[]>([]);
@@ -13,11 +12,10 @@ const App: React.FC = () => {
   const [editState, setEditState] = useState<boolean>(false);
 
   useEffect(() => {
-    axios
-      .get<IActivity[]>("http://localhost:5000/api/activities")
+    agent.Activities.list()
       .then((res) => {
         let activities: IActivity[] = [];
-        res.data.forEach(a => {
+        res.forEach(a => {
           a.date = a.date.split('.')[0];
           activities.push(a);
         })
@@ -33,20 +31,28 @@ const App: React.FC = () => {
   }
 
   const handleCreateActivity = (activity: IActivity) => {
-    setActivities([activity, ...activities]);
-    setSelectedActivity(activity);
-    setEditState(false);
+    agent.Activities.create(activity).then(() => {
+      setActivities([activity, ...activities]);
+      setSelectedActivity(activity);
+      setEditState(false);
+    })
+
   }
 
   const handleEditActivity = (activity: IActivity) => {
-    // Filter and remove only the activity we wish to edit, then add the edited version
-    setActivities([activity, ...activities.filter((a) => a.id !== activity.id)]);
-    setSelectedActivity(activity);
-    setEditState(false);
+    agent.Activities.update(activity).then(() => {
+      // Filter and remove only the activity we wish to edit, then add the edited version
+      setActivities([activity, ...activities.filter((a) => a.id !== activity.id)]);
+      setSelectedActivity(activity);
+      setEditState(false);
+    })
   }
 
   const handleDeleteActivity = (activityId: string) => {
-    setActivities([...activities.filter(a => a.id !== activityId)]);
+    agent.Activities.delete(activityId).then(() => {
+      setActivities([...activities.filter(a => a.id !== activityId)]);
+      setSelectedActivity(null);
+    })
   }
 
   const handleOpenCreateForm = () => {

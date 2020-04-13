@@ -49,6 +49,7 @@ export const ActivityDashboard: React.FC<IProps> = ({
             <ActivityForm
               // key prop will force component to re-render on change
               // -- use conditional checking to see if activity is null
+              // eslint-disable-next-line
               key={activity && activity.id || 0}
               editState={editState}
               editActivity={editActivity}
