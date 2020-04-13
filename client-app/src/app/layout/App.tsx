@@ -5,11 +5,15 @@ import IActivity from '../models/activity';
 import { Navbar } from '../../features/Navbar/Navbar';
 import { ActivityDashboard } from '../../features/Activities/Dashboard/ActivityDashboard';
 import agent from '../api/agent';
+import LoadingComponent from './LoadingComponent';
 
 const App: React.FC = () => {
   const [activities, setActivities] = useState<IActivity[]>([]);
   const [selectedActivtity, setSelectedActivity] = useState<IActivity | null>(null); // defined as union type
   const [editState, setEditState] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [submitting, setSubmitting] = useState<boolean>(false);
+  const [target, setTarget] = useState<string>('');
 
   useEffect(() => {
     agent.Activities.list()
@@ -21,6 +25,7 @@ const App: React.FC = () => {
         })
         setActivities(activities);
       })
+      .then(() => setLoading(false))
   }, [])
 
   const handleSelectActivity = (id: string) => {
@@ -31,33 +36,48 @@ const App: React.FC = () => {
   }
 
   const handleCreateActivity = (activity: IActivity) => {
-    agent.Activities.create(activity).then(() => {
-      setActivities([activity, ...activities]);
-      setSelectedActivity(activity);
-      setEditState(false);
-    })
-
+    setSubmitting(true);
+    agent.Activities.create(activity)
+      .then(() => {
+        setActivities([activity, ...activities]);
+        setSelectedActivity(activity);
+        setEditState(false);
+      })
+      .then(() => setSubmitting(false));
   }
 
   const handleEditActivity = (activity: IActivity) => {
-    agent.Activities.update(activity).then(() => {
-      // Filter and remove only the activity we wish to edit, then add the edited version
-      setActivities([activity, ...activities.filter((a) => a.id !== activity.id)]);
-      setSelectedActivity(activity);
-      setEditState(false);
-    })
+    setSubmitting(true);
+    agent.Activities.update(activity)
+      .then(() => {
+        // Filter and remove only the activity we wish to edit, then add the edited version
+        setActivities([activity, ...activities.filter((a) => a.id !== activity.id)]);
+        setSelectedActivity(activity);
+        setEditState(false);
+      })
+      .then(() => setSubmitting(false));
   }
 
-  const handleDeleteActivity = (activityId: string) => {
-    agent.Activities.delete(activityId).then(() => {
-      setActivities([...activities.filter(a => a.id !== activityId)]);
-      setSelectedActivity(null);
-    })
+  const handleDeleteActivity = (e: React.SyntheticEvent<HTMLButtonElement>, activityId: string) => {
+    setSubmitting(true);
+    setTarget(e.currentTarget.name);
+    agent.Activities.delete(activityId)
+      .then(() => {
+        setActivities([...activities.filter(a => a.id !== activityId)]);
+        setSelectedActivity(null);
+      })
+      .then(() => setSubmitting(false));
   }
 
   const handleOpenCreateForm = () => {
     setSelectedActivity(null);
     setEditState(true);
+  }
+
+  if (loading) {
+    return (
+      <LoadingComponent content="Loading Activities" />
+    )
   }
 
   return (
@@ -74,6 +94,8 @@ const App: React.FC = () => {
           createActivity={handleCreateActivity}
           editActivity={handleEditActivity}
           deleteActivity={handleDeleteActivity}
+          submitting={submitting}
+          target={target}
         />
       </Container>
     </>

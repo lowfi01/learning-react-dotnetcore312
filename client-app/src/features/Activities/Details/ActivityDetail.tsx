@@ -6,9 +6,11 @@ interface IProp {
   selectedActivity: IActivity;
   setEditState: (editState: boolean) => void;
   setSelectedActivity: (activity: IActivity | null) => void;
+  submitting: boolean;
 }
 
 const ActivityDetail: React.FC<IProp> = ({
+  submitting,
   setSelectedActivity,
   setEditState,
   selectedActivity: { title, date, description, category }

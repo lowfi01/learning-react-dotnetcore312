@@ -9,6 +9,7 @@ interface IProp {
   createActivity: (activty: IActivity) => void;
   editActivity: (activity: IActivity) => void;
   editState: boolean;
+  submitting: boolean;
 }
 
 const ActivityForm: React.FC<IProp> = ({
@@ -16,7 +17,8 @@ const ActivityForm: React.FC<IProp> = ({
   selectedActivity,
   createActivity,
   editActivity,
-  editState
+  editState,
+  submitting
 }) => {
   // Populate form with empty values with creating new activity
   const intializeForm = () => {
@@ -70,7 +72,7 @@ const ActivityForm: React.FC<IProp> = ({
         <Form.Input type='datetime-local' placeholder='date' name='date' onChange={handleInputChange} value={activity.date} />
         <Form.Input placeholder='city' name='city' onChange={handleInputChange} value={activity.city} />
         <Form.Input placeholder='venue' name='venue' onChange={handleInputChange} value={activity.venue} />
-        <Button floated='right' positive type='submit' content='submit' />
+        <Button loading={submitting} floated='right' positive type='submit' content='submit' />
         <Button onClick={() => { setEditState(false) }} floated='right' type='button' content='cancel' />
       </Form>
     </Segment>

@@ -6,10 +6,12 @@ import IActivity from '../../../app/models/activity'
 interface IProp {
   activities: IActivity[];
   selectActivity: (id: string) => void; // define the type we are passing
-  deleteActivity: (activityId: string) => void;
+  deleteActivity: (e: React.SyntheticEvent<HTMLButtonElement>, activityId: string) => void;
+  submitting: boolean;
+  target: string;
 }
 
-const ActivityList: React.FC<IProp> = ({ activities, selectActivity, deleteActivity }) => {
+const ActivityList: React.FC<IProp> = ({ target, submitting, activities, selectActivity, deleteActivity }) => {
   return (
     <Segment clear>
       <Item.Group divided>
@@ -27,7 +29,12 @@ const ActivityList: React.FC<IProp> = ({ activities, selectActivity, deleteActiv
                   </Item.Description>
                   <Item.Extra>
                     <Button onClick={() => { selectActivity(id) }} floated='right' content='View' color='blue' />
-                    <Button onClick={() => { deleteActivity(id) }} floated='right' content='Delete' color='red' />
+                    <Button
+                      name={activity.id}
+                      loading={target === activity.id && submitting}
+                      onClick={(e) => { deleteActivity(e, id) }}
+                      floated='right' content='Delete' color='red'
+                    />
                     <Label basic content={category} />
                   </Item.Extra>
                 </Item.Content>
