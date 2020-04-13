@@ -12,7 +12,6 @@ const App: React.FC = () => {
   const [selectedActivtity, setSelectedActivity] = useState<IActivity | null>(null); // defined as union type
   const [editState, setEditState] = useState<boolean>(false);
 
-
   useEffect(() => {
     axios
       .get<IActivity[]>("http://localhost:5000/api/activities")
