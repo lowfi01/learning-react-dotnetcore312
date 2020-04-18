@@ -14,3 +14,4 @@ const CarItem: React.FC<IProps> = ({ car }) => {
 }
 
 export default CarItem
+

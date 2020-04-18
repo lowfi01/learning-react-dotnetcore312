@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Container } from 'semantic-ui-react';
 
 import IActivity from '../models/activity';
@@ -6,8 +6,11 @@ import { Navbar } from '../../features/Navbar/Navbar';
 import { ActivityDashboard } from '../../features/Activities/Dashboard/ActivityDashboard';
 import agent from '../api/agent';
 import LoadingComponent from './LoadingComponent';
+import ActivityStore from '../stores/activityStore';
 
 const App: React.FC = () => {
+  const activityStore = useContext(ActivityStore); // access activity store (mobx)
+
   const [activities, setActivities] = useState<IActivity[]>([]);
   const [selectedActivtity, setSelectedActivity] = useState<IActivity | null>(null); // defined as union type
   const [editState, setEditState] = useState<boolean>(false);
@@ -84,6 +87,7 @@ const App: React.FC = () => {
     <>
       <Navbar OpenCreateForm={handleOpenCreateForm} />
       <Container style={{ marginTop: '7em' }}>
+        <h1>{activityStore.title}</h1>
         <ActivityDashboard
           editState={editState}
           setEditState={setEditState}
