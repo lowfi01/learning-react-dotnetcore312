@@ -3,14 +3,14 @@ import { Container } from 'semantic-ui-react';
 
 import IActivity from '../models/activity';
 import { Navbar } from '../../features/Navbar/Navbar';
-import { ActivityDashboard } from '../../features/Activities/Dashboard/ActivityDashboard';
+import ActivityDashboard from '../../features/Activities/Dashboard/ActivityDashboard';
 import agent from '../api/agent';
 import LoadingComponent from './LoadingComponent';
 import ActivityStore from '../stores/activityStore';
+import { observer } from 'mobx-react-lite';
 
 const App: React.FC = () => {
   const activityStore = useContext(ActivityStore); // access activity store (mobx)
-
   const [activities, setActivities] = useState<IActivity[]>([]);
   const [selectedActivtity, setSelectedActivity] = useState<IActivity | null>(null); // defined as union type
   const [editState, setEditState] = useState<boolean>(false);
@@ -19,17 +19,8 @@ const App: React.FC = () => {
   const [target, setTarget] = useState<string>('');
 
   useEffect(() => {
-    agent.Activities.list()
-      .then((res) => {
-        let activities: IActivity[] = [];
-        res.forEach(a => {
-          a.date = a.date.split('.')[0];
-          activities.push(a);
-        })
-        setActivities(activities);
-      })
-      .then(() => setLoading(false))
-  }, [])
+    activityStore.loadActivities();
+  }, [activityStore])
 
   const handleSelectActivity = (id: string) => {
     // filter returns an array, as we are searching for only one we can assume position [0] is our result.
@@ -77,7 +68,7 @@ const App: React.FC = () => {
     setEditState(true);
   }
 
-  if (loading) {
+  if (activityStore.loadingInitial) {
     return (
       <LoadingComponent content="Loading Activities" />
     )
@@ -87,14 +78,13 @@ const App: React.FC = () => {
     <>
       <Navbar OpenCreateForm={handleOpenCreateForm} />
       <Container style={{ marginTop: '7em' }}>
-        <h1>{activityStore.title}</h1>
         <ActivityDashboard
           editState={editState}
           setEditState={setEditState}
           activity={selectedActivtity!}
           selectActivity={handleSelectActivity}
           setSelectedActivity={setSelectedActivity}
-          activities={activities}
+          activities={activityStore.activities}
           createActivity={handleCreateActivity}
           editActivity={handleEditActivity}
           deleteActivity={handleDeleteActivity}
@@ -106,6 +96,6 @@ const App: React.FC = () => {
   );
 }
 
-export default App;
+export default observer(App);
 
 

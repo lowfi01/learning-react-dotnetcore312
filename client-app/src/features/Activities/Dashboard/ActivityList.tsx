@@ -1,6 +1,7 @@
 import React from 'react'
 import { Item, Segment, Button, Label } from 'semantic-ui-react'
 import IActivity from '../../../app/models/activity'
+import { observer } from 'mobx-react-lite'
 
 
 interface IProp {
@@ -47,4 +48,4 @@ const ActivityList: React.FC<IProp> = ({ target, submitting, activities, selectA
   )
 }
 
-export default ActivityList
+export default observer(ActivityList);
