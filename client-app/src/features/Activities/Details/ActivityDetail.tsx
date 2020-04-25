@@ -5,15 +5,13 @@ import ActivityStore from '../../../app/stores/activityStore';
 import { observer } from 'mobx-react-lite';
 
 interface IProp {
-  submitting: boolean;
+  //
 }
 
-const ActivityDetail: React.FC<IProp> = ({
-  submitting
-}) => {
+const ActivityDetail: React.FC<IProp> = () => {
   const activityStore = useContext(ActivityStore);
   const { selectedActivity } = activityStore;
-  const { title, date, description, category } = selectedActivity!;
+  const { title, date, description, category, id } = selectedActivity!;
   return (
     <Card fluid>
       <Image src={`/assets/categoryImages/${category}.jpg`} wrapped ui={false} />
@@ -28,8 +26,8 @@ const ActivityDetail: React.FC<IProp> = ({
       </Card.Content>
       <Card.Content extra>
         <Button.Group widths={2}>
-          <Button onClick={() => { activityStore.editState = true }} basic color='blue' content='edit' />
-          <Button onClick={() => { activityStore.selectedActivity = undefined }} basic color='grey' content='cancel' />
+          <Button onClick={() => { activityStore.OpenEditForm(selectedActivity!.id) }} basic color='blue' content='edit' />
+          <Button onClick={() => { activityStore.CancelEditForm() }} basic color='grey' content='cancel' />
         </Button.Group>
       </Card.Content>
     </Card>

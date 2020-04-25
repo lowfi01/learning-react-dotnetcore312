@@ -3,14 +3,20 @@ import { createContext } from 'react';
 import IActivity from '../models/activity';
 import agent from '../api/agent';
 
-
 // State management
 class ActivityStore {
-  @observable activities: IActivity[] = [];
+  // Observable maps
+  // - used for arrays of items,
+  // - gives easy key: value pair structures
+  // - makes it easy to locate array elements
+  // - makes it easy for mobx to decide if it should update observers
+  // - we will be replacing this array: @observable activities: IActivity[] = [];
+  @observable activityRegistry = new Map<string, IActivity>();
   @observable loadingInitial: boolean = false;
   @observable selectedActivity: IActivity | undefined; // undefined does not need a value assigned.
   @observable editState: boolean = false;
   @observable submitting: boolean = false; // loading state for our submit buttons
+  @observable targetedButton: string = ''; // Capture current button for loading icon animation
 
   // Computed property
   // - calculating values based on already existing observable data.
@@ -18,7 +24,8 @@ class ActivityStore {
   //   a sort list of activities by date
   @computed get activitiesByDate() {
     // Date.parse(conver iso strings to milliseconds)
-    return this.activities.sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
+    // Array.from() Creates an array from an iterable object.
+    return Array.from(this.activityRegistry.values()).sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
   }
 
   // action - we use to change observables!
@@ -34,7 +41,7 @@ class ActivityStore {
       const activitivies = await agent.Activities.list();
       activitivies.forEach(activity => {
         activity.date = activity.date.split('.')[0];
-        this.activities.push(activity);
+        this.activityRegistry.set(activity.id, activity);
       })
     } catch (error) {
       console.log(error);
@@ -45,8 +52,8 @@ class ActivityStore {
   }
 
   // get activity from our activities array using activity id
-  @action selectActivity = (id?: string) => {
-    this.selectedActivity = this.activities.find(a => a.id === id);
+  @action selectActivity = (id: string) => {
+    this.selectedActivity = this.activityRegistry.get(id);
     this.editState = false;
   }
 
@@ -55,7 +62,7 @@ class ActivityStore {
     this.submitting = true;
     try {
       await agent.Activities.create(activity); // server only returns {} on success
-      this.activities.push(activity);
+      this.activityRegistry.set(activity.id, activity);
       this.selectedActivity = activity;
       this.editState = false;
     } catch (error) {
@@ -63,6 +70,49 @@ class ActivityStore {
     } finally {
       this.submitting = false;
     }
+  }
+
+  @action editActivity = async (activity: IActivity) => {
+    this.submitting = true; // turn on loading icon
+    try {
+      await agent.Activities.update(activity);
+      this.activityRegistry.set(activity.id, activity);
+      this.selectedActivity = activity;
+      this.editState = false;
+    } catch (error) {
+      console.log(error);
+    } finally {
+      this.submitting = false;
+    }
+  }
+
+  @action deleteActivity = async (e: React.SyntheticEvent<HTMLButtonElement>, id: string) => {
+    this.targetedButton = e.currentTarget.name; // target button, so we can isolate loading animation.
+    this.submitting = true;
+    try {
+      await agent.Activities.delete(id);
+      // .then(x => x);
+      this.activityRegistry.delete(id);
+      this.selectedActivity = undefined;
+    } catch (error) {
+      console.log('error', error)
+    } finally {
+      this.submitting = false;
+      this.targetedButton = '';
+    }
+  }
+
+  @action OpenEditForm = (id: string) => {
+    this.editState = true;
+    this.selectedActivity = this.activityRegistry.get(id);
+  }
+
+  @action CancelEditForm = () => {
+    this.selectedActivity = undefined;
+  }
+
+  @action CancelFormOpen = () => {
+    this.editState = false;
   }
 
   // handles the logic to view create activity form

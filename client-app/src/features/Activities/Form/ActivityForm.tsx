@@ -6,23 +6,16 @@ import { v4 as uuid } from 'uuid';
 import ActivityStore from '../../../app/stores/activityStore';
 
 interface IProp {
-  setEditState: (editState: boolean) => void;
-  selectedActivity: IActivity | undefined;
-  editActivity: (activity: IActivity) => void;
-  editState: boolean;
-  submitting: boolean;
+  //
 }
 
-const ActivityForm: React.FC<IProp> = ({
-  setEditState,
-  selectedActivity,
-  editActivity,
-  editState,
-  submitting
-}) => {
+const ActivityForm: React.FC<IProp> = () => {
+  // import and use mobx ActivityStore
+  const activityStore = useContext(ActivityStore);
+
   // Populate form with empty values with creating new activity
   const intializeForm = () => {
-    if (selectedActivity === undefined) { // create activity use case
+    if (activityStore.selectedActivity === undefined) { // create activity use case
       return {
         id: '',
         title: '',
@@ -33,14 +26,9 @@ const ActivityForm: React.FC<IProp> = ({
         venue: ''
       }
     }
-    return selectedActivity // edit activity use case
+    return activityStore.selectedActivity // edit activity use case
   }
-
   const [activity, setActivity] = useState<IActivity>(intializeForm); // Create hook with either populated or empty fields
-
-  // import and use mobx ActivityStore
-  const activityStore = useContext(ActivityStore);
-  const { createActivity } = activityStore;
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 
@@ -49,9 +37,9 @@ const ActivityForm: React.FC<IProp> = ({
         ...activity,
         id: uuid()
       }
-      createActivity(newActivity);
+      activityStore.createActivity(newActivity);
     } else {
-      editActivity(activity)
+      activityStore.editActivity(activity)
     }
 
     // if (editState) {
@@ -76,8 +64,8 @@ const ActivityForm: React.FC<IProp> = ({
         <Form.Input type='datetime-local' placeholder='date' name='date' onChange={handleInputChange} value={activity.date} />
         <Form.Input placeholder='city' name='city' onChange={handleInputChange} value={activity.city} />
         <Form.Input placeholder='venue' name='venue' onChange={handleInputChange} value={activity.venue} />
-        <Button loading={submitting} floated='right' positive type='submit' content='submit' />
-        <Button onClick={() => { setEditState(false) }} floated='right' type='button' content='cancel' />
+        <Button loading={activityStore.submitting} floated='right' positive type='submit' content='submit' />
+        <Button onClick={() => { activityStore.CancelFormOpen() }} floated='right' type='button' content='cancel' />
       </Form>
     </Segment>
   )

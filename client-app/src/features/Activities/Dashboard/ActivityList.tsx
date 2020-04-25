@@ -5,14 +5,12 @@ import { observer } from 'mobx-react-lite'
 import ActivityStore from '../../../app/stores/activityStore';
 
 interface IProp {
-  deleteActivity: (e: React.SyntheticEvent<HTMLButtonElement>, activityId: string) => void;
-  submitting: boolean;
-  target: string;
+  //
 }
 
-const ActivityList: React.FC<IProp> = ({ target, submitting, deleteActivity }) => {
+const ActivityList: React.FC<IProp> = () => {
   const activityStore = useContext(ActivityStore);
-  const { activitiesByDate, selectActivity } = activityStore;
+  const { activitiesByDate, selectActivity, deleteActivity, submitting, targetedButton } = activityStore;
   return (
     <Segment clear>
       <Item.Group divided>
@@ -32,7 +30,7 @@ const ActivityList: React.FC<IProp> = ({ target, submitting, deleteActivity }) =
                     <Button onClick={() => { selectActivity(id) }} floated='right' content='View' color='blue' />
                     <Button
                       name={activity.id}
-                      loading={target === activity.id && submitting}
+                      loading={targetedButton === activity.id && submitting}
                       onClick={(e) => { deleteActivity(e, id) }}
                       floated='right' content='Delete' color='red'
                     />

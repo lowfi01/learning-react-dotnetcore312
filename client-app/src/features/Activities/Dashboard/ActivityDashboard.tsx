@@ -16,47 +16,25 @@ import ActivityDetail from '../Details/ActivityDetail';
 import ActivityForm from '../Form/ActivityForm';
 
 interface IProps {
-  activities: IActivity[];
-  setEditState: (editState: boolean) => void;
-  setSelectedActivity: (activity: IActivity | null) => void;
-  editActivity: (activity: IActivity) => void;
-  deleteActivity: (e: React.SyntheticEvent<HTMLButtonElement>, acitivityId: string) => void;
-  target: string;
+  //
 }
 
-const ActivityDashboard: React.FC<IProps> = ({
-  setSelectedActivity,
-  activities,
-  setEditState,
-  editActivity,
-  deleteActivity,
-  target
-}) => {
+const ActivityDashboard: React.FC<IProps> = () => {
   const activityStore = useContext(ActivityStore);
-  const { editState, selectedActivity, submitting } = activityStore;
+  const { editState, selectedActivity } = activityStore;
   return (
     <div>
       <Grid>
         <Grid.Column width={10}>
-          <ActivityList
-            target={target}
-            submitting={submitting}
-            deleteActivity={deleteActivity}
-          />
+          <ActivityList />
         </Grid.Column>
         <Grid.Column width={6}>
           {selectedActivity && !editState &&
-            <ActivityDetail
-              submitting={submitting}
-            />}
+            <ActivityDetail />
+          }
           {editState &&
             <ActivityForm
               key={selectedActivity && selectedActivity.id || 0}
-              editState={editState}
-              editActivity={editActivity}
-              selectedActivity={selectedActivity}
-              setEditState={setEditState}
-              submitting={submitting}
             />}
         </Grid.Column>
       </Grid>
