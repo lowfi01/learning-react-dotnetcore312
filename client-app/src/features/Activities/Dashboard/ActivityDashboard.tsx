@@ -1,5 +1,11 @@
-import React from 'react'
+/* eslint-disable no-mixed-operators */
+import React, { useContext } from 'react'
 import { Grid } from 'semantic-ui-react'
+import { observer } from 'mobx-react-lite';
+
+// Stores
+import ActivityStore from '../../../app/stores/activityStore';
+
 
 // Models
 import IActivity from '../../../app/models/activity';
@@ -8,59 +14,47 @@ import IActivity from '../../../app/models/activity';
 import ActivityList from './ActivityList';
 import ActivityDetail from '../Details/ActivityDetail';
 import ActivityForm from '../Form/ActivityForm';
-import { observer } from 'mobx-react-lite';
 
 interface IProps {
   activities: IActivity[];
-  selectActivity: (id: string) => void; // define the type we are passing
-  activity: IActivity | null;
   setEditState: (editState: boolean) => void;
-  editState: boolean;
   setSelectedActivity: (activity: IActivity | null) => void;
-  createActivity: (activity: IActivity) => void;
   editActivity: (activity: IActivity) => void;
   deleteActivity: (e: React.SyntheticEvent<HTMLButtonElement>, acitivityId: string) => void;
-  submitting: boolean;
   target: string;
 }
 
 const ActivityDashboard: React.FC<IProps> = ({
   setSelectedActivity,
   activities,
-  selectActivity,
-  activity,
-  editState,
   setEditState,
-  createActivity,
   editActivity,
   deleteActivity,
-  submitting,
   target
 }) => {
+  const activityStore = useContext(ActivityStore);
+  const { editState, selectedActivity, submitting } = activityStore;
   return (
     <div>
       <Grid>
         <Grid.Column width={10}>
-          <ActivityList target={target} submitting={submitting} deleteActivity={deleteActivity} selectActivity={selectActivity} activities={activities} />
+          <ActivityList
+            target={target}
+            submitting={submitting}
+            deleteActivity={deleteActivity}
+          />
         </Grid.Column>
         <Grid.Column width={6}>
-          {activity && !editState &&
+          {selectedActivity && !editState &&
             <ActivityDetail
-              setSelectedActivity={setSelectedActivity}
-              selectedActivity={activity}
-              setEditState={setEditState}
               submitting={submitting}
             />}
           {editState &&
             <ActivityForm
-              // key prop will force component to re-render on change
-              // -- use conditional checking to see if activity is null
-              // eslint-disable-next-line
-              key={activity && activity.id || 0}
+              key={selectedActivity && selectedActivity.id || 0}
               editState={editState}
               editActivity={editActivity}
-              createActivity={createActivity}
-              selectedActivity={activity}
+              selectedActivity={selectedActivity}
               setEditState={setEditState}
               submitting={submitting}
             />}

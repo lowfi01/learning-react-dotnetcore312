@@ -1,23 +1,23 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Item, Segment, Button, Label } from 'semantic-ui-react'
 import IActivity from '../../../app/models/activity'
 import { observer } from 'mobx-react-lite'
-
+import ActivityStore from '../../../app/stores/activityStore';
 
 interface IProp {
-  activities: IActivity[];
-  selectActivity: (id: string) => void; // define the type we are passing
   deleteActivity: (e: React.SyntheticEvent<HTMLButtonElement>, activityId: string) => void;
   submitting: boolean;
   target: string;
 }
 
-const ActivityList: React.FC<IProp> = ({ target, submitting, activities, selectActivity, deleteActivity }) => {
+const ActivityList: React.FC<IProp> = ({ target, submitting, deleteActivity }) => {
+  const activityStore = useContext(ActivityStore);
+  const { activitiesByDate, selectActivity } = activityStore;
   return (
     <Segment clear>
       <Item.Group divided>
         {
-          activities.map((activity: IActivity) => {
+          activitiesByDate.map((activity: IActivity) => {
             const { id, title, description, date, city, venue, category } = activity;
             return (
               <Item key={id}>

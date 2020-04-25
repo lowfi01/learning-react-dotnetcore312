@@ -1,12 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Segment, Form, Button } from 'semantic-ui-react'
 import IActivity from '../../../app/models/activity'
 import { v4 as uuid } from 'uuid';
 
+import ActivityStore from '../../../app/stores/activityStore';
+
 interface IProp {
   setEditState: (editState: boolean) => void;
-  selectedActivity: IActivity | null;
-  createActivity: (activty: IActivity) => void;
+  selectedActivity: IActivity | undefined;
   editActivity: (activity: IActivity) => void;
   editState: boolean;
   submitting: boolean;
@@ -15,14 +16,13 @@ interface IProp {
 const ActivityForm: React.FC<IProp> = ({
   setEditState,
   selectedActivity,
-  createActivity,
   editActivity,
   editState,
   submitting
 }) => {
   // Populate form with empty values with creating new activity
   const intializeForm = () => {
-    if (selectedActivity === null) { // create activity use case
+    if (selectedActivity === undefined) { // create activity use case
       return {
         id: '',
         title: '',
@@ -36,7 +36,11 @@ const ActivityForm: React.FC<IProp> = ({
     return selectedActivity // edit activity use case
   }
 
-  const [activity, setActivity] = useState<IActivity>(intializeForm);
+  const [activity, setActivity] = useState<IActivity>(intializeForm); // Create hook with either populated or empty fields
+
+  // import and use mobx ActivityStore
+  const activityStore = useContext(ActivityStore);
+  const { createActivity } = activityStore;
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 

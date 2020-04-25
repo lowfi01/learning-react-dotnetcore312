@@ -12,7 +12,6 @@ const responseBody = (response: AxiosResponse) => response.data;
 // - carrying a function.
 //   - process of transforming a function with multiple arguments into
 //     a sequence of nesting functions.
-
 const sleep = (ms: number) => (response: AxiosResponse) =>
   new Promise<AxiosResponse>(resolve => setTimeout(() => resolve(response), ms));
 

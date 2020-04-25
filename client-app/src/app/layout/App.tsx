@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Container } from 'semantic-ui-react';
 
 import IActivity from '../models/activity';
-import { Navbar } from '../../features/Navbar/Navbar';
+import Navbar from '../../features/Navbar/Navbar';
 import ActivityDashboard from '../../features/Activities/Dashboard/ActivityDashboard';
 import agent from '../api/agent';
 import LoadingComponent from './LoadingComponent';
@@ -23,10 +23,8 @@ const App: React.FC = () => {
   }, [activityStore])
 
   const handleSelectActivity = (id: string) => {
-    // filter returns an array, as we are searching for only one we can assume position [0] is our result.
-    const selectedActivityInArray = activities.filter(a => a.id === id)[0];
-    setSelectedActivity(selectedActivityInArray);
-    setEditState(false);
+    // handle when user selects an activity - using action store.
+    activityStore.selectActivity(id);
   }
 
   const handleCreateActivity = (activity: IActivity) => {
@@ -76,19 +74,14 @@ const App: React.FC = () => {
 
   return (
     <>
-      <Navbar OpenCreateForm={handleOpenCreateForm} />
+      <Navbar />
       <Container style={{ marginTop: '7em' }}>
         <ActivityDashboard
-          editState={editState}
           setEditState={setEditState}
-          activity={selectedActivtity!}
-          selectActivity={handleSelectActivity}
           setSelectedActivity={setSelectedActivity}
           activities={activityStore.activities}
-          createActivity={handleCreateActivity}
           editActivity={handleEditActivity}
           deleteActivity={handleDeleteActivity}
-          submitting={submitting}
           target={target}
         />
       </Container>

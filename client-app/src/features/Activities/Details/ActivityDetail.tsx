@@ -1,20 +1,19 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Card, Image, Button } from 'semantic-ui-react'
 import IActivity from '../../../app/models/activity'
+import ActivityStore from '../../../app/stores/activityStore';
+import { observer } from 'mobx-react-lite';
 
 interface IProp {
-  selectedActivity: IActivity;
-  setEditState: (editState: boolean) => void;
-  setSelectedActivity: (activity: IActivity | null) => void;
   submitting: boolean;
 }
 
 const ActivityDetail: React.FC<IProp> = ({
-  submitting,
-  setSelectedActivity,
-  setEditState,
-  selectedActivity: { title, date, description, category }
+  submitting
 }) => {
+  const activityStore = useContext(ActivityStore);
+  const { selectedActivity } = activityStore;
+  const { title, date, description, category } = selectedActivity!;
   return (
     <Card fluid>
       <Image src={`/assets/categoryImages/${category}.jpg`} wrapped ui={false} />
@@ -29,12 +28,12 @@ const ActivityDetail: React.FC<IProp> = ({
       </Card.Content>
       <Card.Content extra>
         <Button.Group widths={2}>
-          <Button onClick={() => { setEditState(true) }} basic color='blue' content='edit' />
-          <Button onClick={() => { setSelectedActivity(null) }} basic color='grey' content='cancel' />
+          <Button onClick={() => { activityStore.editState = true }} basic color='blue' content='edit' />
+          <Button onClick={() => { activityStore.selectedActivity = undefined }} basic color='grey' content='cancel' />
         </Button.Group>
       </Card.Content>
     </Card>
   )
 }
 
-export default ActivityDetail
+export default observer(ActivityDetail);
