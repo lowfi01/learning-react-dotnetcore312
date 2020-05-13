@@ -1,15 +1,14 @@
-import { observable, action, computed, configure, runInAction } from 'mobx';
-import { createContext } from 'react';
-import IActivity from '../models/activity';
-import agent from '../api/agent';
-
+import { observable, action, computed, configure, runInAction } from "mobx";
+import { createContext } from "react";
+import IActivity from "../models/activity";
+import agent from "../api/agent";
 
 // Mobx configuration
 // - enable strict mode
 // - forces all state mutations to be run
 //   only when wrapped in an action
 configure({
-  enforceActions: 'always'
+  enforceActions: "always",
 });
 
 // State management
@@ -20,12 +19,11 @@ class ActivityStore {
   // - makes it easy to locate array elements
   // - makes it easy for mobx to decide if it should update observers
   // - we will be replacing this array: @observable activities: IActivity[] = [];
-  @observable activityRegistry = new Map<string, IActivity>();
-  @observable loadingInitial: boolean = false;
-  @observable selectedActivity: IActivity | undefined; // undefined does not need a value assigned.
-  @observable editState: boolean = false;
-  @observable submitting: boolean = false; // loading state for our submit buttons
-  @observable targetedButton: string = ''; // Capture current button for loading icon animation
+  @observable activityRegistry = new Map();
+  @observable loadingInitial = false;
+  @observable selectedActivity: IActivity | null = null; // undefined does not need a value assigned.
+  @observable submitting = false; // loading state for our submit buttons
+  @observable targetedButton = ""; // Capture current button for loading icon animation
 
   // Computed property
   // - calculating values based on already existing observable data.
@@ -34,7 +32,9 @@ class ActivityStore {
   @computed get activitiesByDate() {
     // Date.parse(conver iso strings to milliseconds)
     // Array.from() Creates an array from an iterable object.
-    return Array.from(this.activityRegistry.values()).sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
+    return Array.from(this.activityRegistry.values()).sort(
+      (a, b) => Date.parse(a.date) - Date.parse(b.date)
+    );
   }
 
   // action - we use to change observables!
@@ -50,103 +50,129 @@ class ActivityStore {
       const activitivies = await agent.Activities.list();
       // - add action wrapper so promises still scope to actions
       //   and work with strict mode.
-      runInAction('loading activities populating', () => {
-        activitivies.forEach(activity => {
-          activity.date = activity.date.split('.')[0];
+      runInAction("loading activities populating", () => {
+        activitivies.forEach((activity) => {
+          activity.date = activity.date.split(".")[0];
           this.activityRegistry.set(activity.id, activity);
-        })
-      })
+        });
+      });
     } catch (error) {
       console.log(error);
     } finally {
-      runInAction('loading acitivties disable loading', () => {
+      runInAction("loading acitivities disable loading", () => {
+        // action wrapper for mobx strict
         this.loadingInitial = false; // disable loading screen!
-      })
+      });
+    }
+  };
+
+  @action loadActivity = async (id: string) => {
+    this.loadingInitial = true;
+    // add condition if no selected activity was selected by user.
+    if (!this.activityRegistry.has(id)) {
+      try {
+        const activityInDb: IActivity = await agent.Activities.details(id);
+        runInAction(`loading activity of id: ${id}`, () => {
+          // action wrapper for mobx strict
+          this.selectedActivity = activityInDb;
+        });
+      } catch (error) {
+        console.log("%c⧭", "color: #f2ceb6", error);
+      }
+    } else {
+      runInAction(`set activity of id: ${id}`, () => {
+        // action wrapper for mobx strict
+        this.selectedActivity = this.activityRegistry.get(id);
+      });
     }
 
-  }
+    runInAction(`disable loading screen`, () => {
+      this.loadingInitial = false;
+    });
+  };
 
   // get activity from our activities array using activity id
   @action selectActivity = (id: string) => {
+    // action wrapper for mobx strict
     this.selectedActivity = this.activityRegistry.get(id);
-    this.editState = false;
-  }
+  };
 
   // creates activity by passing activity form data to our backend
   @action createActivity = async (activity: IActivity) => {
     this.submitting = true;
     try {
       await agent.Activities.create(activity); // server only returns {} on success
-      runInAction('creating activity', () => {
+      runInAction("creating activity", () => {
         this.activityRegistry.set(activity.id, activity);
         this.selectedActivity = activity;
-        this.editState = false;
-      })
+      });
     } catch (error) {
       console.log(error);
     } finally {
-      runInAction('creating activity disable submitting', () => {
+      runInAction("creating activity disable submitting", () => {
         this.submitting = false;
-      })
+      });
     }
-  }
+  };
 
   @action editActivity = async (activity: IActivity) => {
     this.submitting = true; // turn on loading icon
     try {
       await agent.Activities.update(activity);
-      runInAction('editing activity', () => {
+      runInAction("editing activity", () => {
+        // action wrapper for mobx strict
         this.activityRegistry.set(activity.id, activity);
         this.selectedActivity = activity;
-        this.editState = false;
-      })
+      });
     } catch (error) {
       console.log(error);
     } finally {
-      runInAction('editing activity disable submitting', () => {
+      runInAction("editing activity disable submitting", () => {
         this.submitting = false;
-      })
+      });
     }
-  }
+  };
 
-  @action deleteActivity = async (e: React.SyntheticEvent<HTMLButtonElement>, id: string) => {
+  @action deleteActivity = async (
+    e: React.SyntheticEvent<HTMLButtonElement>,
+    id: string
+  ) => {
     this.targetedButton = e.currentTarget.name; // target button, so we can isolate loading animation.
     this.submitting = true;
     try {
       await agent.Activities.delete(id);
       // .then(x => x);
-      runInAction('deleting activity', () => {
+      runInAction("deleting activity", () => {
+        // action wrapper for mobx strict
         this.activityRegistry.delete(id);
-        this.selectedActivity = undefined;
-      })
+        this.selectedActivity = null;
+      });
     } catch (error) {
-      console.log('error', error)
+      console.log("error", error);
     } finally {
-      runInAction('deleting activity disable submitting, target', () => {
+      runInAction("deleting activity disable submitting, target", () => {
         this.submitting = false;
-        this.targetedButton = '';
-      })
+        this.targetedButton = "";
+      });
     }
-  }
+  };
 
   @action OpenEditForm = (id: string) => {
-    this.editState = true;
     this.selectedActivity = this.activityRegistry.get(id);
-  }
+  };
 
   @action CancelEditForm = () => {
-    this.selectedActivity = undefined;
-  }
-
-  @action CancelFormOpen = () => {
-    this.editState = false;
-  }
+    this.selectedActivity = null;
+  };
 
   // handles the logic to view create activity form
   @action openCreateForm = () => {
-    this.selectedActivity = undefined;
-    this.editState = true;
-  }
+    this.selectedActivity = null;
+  };
+
+  @action clearActivity = () => {
+    this.selectedActivity = null;
+  };
 }
 
 // create new instance of AcitivtyStore.
