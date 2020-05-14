@@ -30,10 +30,87 @@ class ActivityStore {
   // - call this computed function anywhere in our app and it will return
   //   a sort list of activities by date
   @computed get activitiesByDate() {
-    // Date.parse(conver iso strings to milliseconds)
-    // Array.from() Creates an array from an iterable object.
-    return Array.from(this.activityRegistry.values()).sort(
+    return this.groupActivitiesByDate(
+      Array.from(this.activityRegistry.values()) // Array.from() conversts map to array.
+    );
+  }
+
+  groupActivitiesByDate(activities: IActivity[]) {
+    // sort activities based on date in milliseconds.
+    const sortedActivities = activities.sort(
       (a, b) => Date.parse(a.date) - Date.parse(b.date)
+    );
+
+    /*
+    // group activities by date
+    // - object.entries, will return a new array for each key property. (An array of arrays)
+      // reducer logic  does this
+          //so callback function would look like
+            const groupingCallback = (groupedActivities,activity) => {
+              let key:string = activity.date.split('T')[0] //would give us this - "2020-02-04"
+              if(!groupedActivities[key]){
+                  groupedActivities[key] = activity;
+              }
+              groupedActivities[key] = [...groupedActivities[key],activity];
+              return  groupedActivities ;
+            }
+
+          // resulting output will look like this
+            "2020-02-04": [
+                {
+                  "id": "6648f967-c97a-4daf-a35e-8c6e6790e249",
+                  "title": "Future Activity 2",
+                  "description": "Activity 2 months in future",
+                  "category": "music",
+                  "date": "2020-02-04T09:36:11",
+                  "city": "London",
+                  "venue": "O2 Arena"
+                },
+                {
+                  "id": "60fdfb82-c2e1-4cdc-b87c-1bca06eb9ec8",
+                  "title": "Future Activity 3",
+                  "description": "Activity 3 months in future",
+                  "category": "drinks",
+                  "date": "2020-02-04T09:36:11",
+                  "city": "London",
+                  "venue": "Another pub"
+                }
+              ]
+        // object.entries does this
+            [
+              "2020-02-04",
+              [
+                {
+                  "id": "6648f967-c97a-4daf-a35e-8c6e6790e249",
+                  "title": "Future Activity 2",
+                  "description": "Activity 2 months in future",
+                  "category": "music",
+                  "date": "2020-02-04T09:36:11",
+                  "city": "London",
+                  "venue": "O2 Arena"
+                },
+                {
+                  "id": "60fdfb82-c2e1-4cdc-b87c-1bca06eb9ec8",
+                  "title": "Future Activity 3",
+                  "description": "Activity 3 months in future",
+                  "category": "drinks",
+                  "date": "2020-02-04T09:36:11",
+                  "city": "London",
+                  "venue": "Another pub"
+                }
+              ]
+            ]
+      */
+
+    return Object.entries(
+      sortedActivities.reduce((activities, activity) => {
+        // capture only date not time "2020-04-03T23:27:08"
+        const key: string = activity.date.split("T")[0]; // "2020-04-03"
+        activities[key] = activities[key]
+          ? [...activities[key], activity]
+          : [activity];
+        return activities;
+      }, {} as { [key: string]: IActivity[] })
     );
   }
 
@@ -56,6 +133,7 @@ class ActivityStore {
           this.activityRegistry.set(activity.id, activity);
         });
       });
+      // console.log(this.groupActivitiesByDate(activitivies)); // TESTING this.groupActivitiesByDate();
     } catch (error) {
       console.log(error);
     } finally {

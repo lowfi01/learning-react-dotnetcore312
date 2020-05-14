@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Item, Segment } from "semantic-ui-react";
+import { Item, Segment, Label } from "semantic-ui-react";
 import { observer } from "mobx-react-lite";
 
 // state management
@@ -12,13 +12,22 @@ import ActivityItem from "./ActivityItem";
 const ActivityList: React.FC = () => {
   const { activitiesByDate } = useContext(ActivityStore);
   return (
-    <Segment>
-      <Item.Group divided>
-        {activitiesByDate.map((activity: IActivity) => {
-          return <ActivityItem key={activity.id} activity={activity} />;
-        })}
-      </Item.Group>
-    </Segment>
+    <>
+      {activitiesByDate.map(([group, activities]) => (
+        <React.Fragment key={group}>
+          <Label size="large" color="blue">
+            {group}
+          </Label>
+          <Segment>
+            <Item.Group divided>
+              {activities.map((activity: IActivity) => {
+                return <ActivityItem key={activity.id} activity={activity} />;
+              })}
+            </Item.Group>
+          </Segment>
+        </React.Fragment>
+      ))}
+    </>
   );
 };
 
