@@ -1,5 +1,5 @@
 import React from "react";
-import { Item, Button, Label } from "semantic-ui-react";
+import { Item, Button, Label, Segment, Icon } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 
@@ -13,28 +13,34 @@ interface IProps {
 const ActivityItem: React.FC<IProps> = ({ activity }) => {
   const { id, title, description, date, city, venue, category } = activity;
   return (
-    <Item key={id}>
-      <Item.Content>
-        <Item.Header as="a">{title}</Item.Header>
-        <Item.Meta>{date}</Item.Meta>
-        <Item.Description>
-          <div>{description}</div>
-          <div>
-            {city}, {venue}
-          </div>
-        </Item.Description>
-        <Item.Extra>
-          <Button
-            as={Link}
-            to={`/activities/${id}`}
-            floated="right"
-            content="View"
-            color="blue"
-          />
-          <Label basic content={category} />
-        </Item.Extra>
-      </Item.Content>
-    </Item>
+    <Segment.Group>
+      <Segment>
+        <Item.Group>
+          <Item key={id}>
+            <Item.Image size="tiny" circular src="/assets/user.png" />
+            <Item.Content>
+              <Item.Header as="a">{title}</Item.Header>
+              <Item.Description>Hosted by Bob</Item.Description>
+            </Item.Content>
+          </Item>
+        </Item.Group>
+      </Segment>
+      <Segment>
+        <Icon name="clock" /> {date}
+        <Icon name="marker" /> {venue}, {city}
+      </Segment>
+      <Segment secondary>Attendees will go here</Segment>
+      <Segment clearing>
+        <span>{description}</span>
+        <Button
+          as={Link}
+          to={`/activities/${id}`}
+          floated="right"
+          content="View"
+          color="blue"
+        />
+      </Segment>
+    </Segment.Group>
   );
 };
 

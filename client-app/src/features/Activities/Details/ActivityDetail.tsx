@@ -1,9 +1,13 @@
 import React, { useContext, useEffect } from "react";
-import { Card, Image, Button } from "semantic-ui-react";
+import { Card, Image, Button, Grid, GridColumn } from "semantic-ui-react";
 import ActivityStore from "../../../app/stores/activityStore";
 import { observer } from "mobx-react-lite";
 import { useParams, RouteComponentProps, Link } from "react-router-dom";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
+import ActivityDetailHeader from "./ActivityDetailHeader";
+import ActivityDetailInfo from "./ActivityDetailInfo";
+import ActivityDetailChat from "./ActivityDetailChat";
+import ActiivityDetailSidebar from "./ActiivityDetailSidebar";
 
 interface DetailParams {
   id: string;
@@ -30,40 +34,16 @@ const ActivityDetail: React.FC<RouteComponentProps<DetailParams>> = ({
     return <LoadingComponent content="Loading Activity" />;
 
   return (
-    <Card fluid>
-      <Image
-        src={`/assets/categoryImages/${selectedActivity?.category}.jpg`}
-        wrapped
-        ui={false}
-      />
-      <Card.Content>
-        <Card.Header>{selectedActivity?.title}</Card.Header>
-        <Card.Meta>
-          <span>{selectedActivity?.date}</span>
-        </Card.Meta>
-        <Card.Description>{selectedActivity?.description}</Card.Description>
-      </Card.Content>
-      <Card.Content extra>
-        <Button.Group widths={2}>
-          <Button
-            as={Link}
-            to={`/manage/${id}`}
-            basic
-            color="blue"
-            content="edit"
-          />
-          <Button
-            onClick={() => {
-              CancelEditForm();
-              history.push("/activities");
-            }}
-            basic
-            color="grey"
-            content="cancel"
-          />
-        </Button.Group>
-      </Card.Content>
-    </Card>
+    <Grid>
+      <GridColumn width={10}>
+        <ActivityDetailHeader activity={selectedActivity} />
+        <ActivityDetailInfo />
+        <ActivityDetailChat />
+      </GridColumn>
+      <GridColumn width={6}>
+        <ActiivityDetailSidebar />
+      </GridColumn>
+    </Grid>
   );
 };
 
