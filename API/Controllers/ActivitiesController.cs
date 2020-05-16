@@ -11,6 +11,14 @@ namespace API.Controllers
 {
   // MVC attributes
   [Route("api/[controller]")]
+
+  // [ApiController]
+  // - Magic! this will automatically validate System.ComponentModel.DataAnnotations,
+  //   which will give automatic 400 responses.
+  //   - So if you want to debug your API and you have data annotations, just comment this out. :D
+  //     though in this demo we will be using fluent validation vs data annotation
+  //   - prior to ApiController attribute we would need to check the modelState outselves.
+  //     create(body request) { if(!ModelState.isValid){ return BadRequest(modelState); }  }
   [ApiController]
   public class ActivitiesController : ControllerBase
   {
@@ -80,8 +88,11 @@ namespace API.Controllers
     //    -- Lets assume we were not using ApiController attributes, we would could then use this
     //       --  Create([Frombody]Type variable) // which would give a hint to where to look to help binding the model
     [HttpPost]
-    public async Task<ActionResult<Unit>> Create([FromBody]Create.Command command)
+    public async Task<ActionResult<Unit>> Create([FromBody] Create.Command command)  // note - Auto binding we map the request body to the command!! similar to DTO
     {
+      // Note - this is the approach we would do prior to [ApiAttribute]
+      if (!ModelState.IsValid) return BadRequest(ModelState); // should return 400 if data attribute fails
+
       return await _mediator.Send(command);
     }
 
