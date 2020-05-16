@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Item, Segment, Label } from "semantic-ui-react";
+import { Item, Label } from "semantic-ui-react";
 import { observer } from "mobx-react-lite";
 
 // state management

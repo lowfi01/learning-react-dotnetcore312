@@ -1,5 +1,5 @@
 import React from "react";
-import { Item, Button, Label, Segment, Icon } from "semantic-ui-react";
+import { Item, Button, Segment, Icon } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 
@@ -11,7 +11,7 @@ interface IProps {
 }
 
 const ActivityItem: React.FC<IProps> = ({ activity }) => {
-  const { id, title, description, date, city, venue, category } = activity;
+  const { id, title, description, date, city, venue } = activity;
   return (
     <Segment.Group>
       <Segment>
