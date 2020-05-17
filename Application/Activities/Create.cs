@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
 using Domain;
@@ -12,6 +13,7 @@ namespace Application.Activities
     public class Command : IRequest // note we don't pass unit type to IRequest.
     {
       public Guid Id { get; set; }
+
       public string Title { get; set; }
       public string Description { get; set; }
 
@@ -27,6 +29,7 @@ namespace Application.Activities
     public class Handler : IRequestHandler<Command>
     {
       private readonly DataContext _context;
+
       public Handler(DataContext context)
       {
         this._context = context;
@@ -51,7 +54,7 @@ namespace Application.Activities
         // -- SaveChangesAsync, will return an int based on successful saves to database
         //    -- we can conditional check result by adding a trailling > operator that.
         //       - checks if returned int is greater than 0,
-        //    -- if successful success should be an interger value greater than 0.
+        //    -- if successful success should be true!.
         var success = await _context.SaveChangesAsync() > 0;
 
         // handle exception errors
