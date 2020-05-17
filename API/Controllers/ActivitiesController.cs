@@ -91,7 +91,7 @@ namespace API.Controllers
     public async Task<ActionResult<Unit>> Create([FromBody] Create.Command command)  // note - Auto binding we map the request body to the command!! similar to DTO
     {
       // Note - this is the approach we would do prior to [ApiAttribute]
-      if (!ModelState.IsValid) return BadRequest(ModelState); // should return 400 if data attribute fails
+      // if (!ModelState.IsValid) return BadRequest(ModelState); // should return 400 if data attribute fails
 
       return await _mediator.Send(command);
     }

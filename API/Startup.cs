@@ -1,4 +1,5 @@
 using Application.Activities;
+using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -23,7 +24,19 @@ namespace API
     public void ConfigureServices(IServiceCollection services)
     {
       // Data injection
-      services.AddControllers();
+      services.AddControllers()
+        // add fluent validation as a service
+        .AddFluentValidation(cfg =>
+        {
+          // FlientValidation Setup
+          // - Find which assemblies contain our validators.
+          // - Validator will register the entire assembly that contains the Application.Create class.
+          //   - so it will register the Application assembly :D
+          cfg.RegisterValidatorsFromAssemblyContaining<Create>();
+        });
+
+
+
 
       // End CORS - cross origin request blocked
       services.AddCors(options =>
@@ -54,6 +67,9 @@ namespace API
       //      -- this is because it is smart enough to understand that it can find all
       //      -- the other handlers within that project passed
       services.AddMediatR(typeof(List.Handler).Assembly);
+
+
+      //
 
     }
 
