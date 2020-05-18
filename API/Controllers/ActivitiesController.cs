@@ -20,6 +20,7 @@ namespace API.Controllers
   //   - prior to ApiController attribute we would need to check the modelState outselves.
   //     create(body request) { if(!ModelState.isValid){ return BadRequest(modelState); }  }
   [ApiController]
+
   public class ActivitiesController : ControllerBase
   {
     // Thin API controller model

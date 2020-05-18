@@ -48,6 +48,9 @@ namespace DatingApp.API.Controllers
       // - Value is a class, hence this is an object so the default value is null.
       // var valueInDb = await _context.Values.SingleOrDefaultAsync();
       var valueInDb = await _context.Values.FindAsync(id); // similar but will always return null if unfound
+
+      if (valueInDb == null) return NotFound(); // this is the method used for repository pattern
+
       return Ok(valueInDb); // ok returns 200 status code
 
     }

@@ -31,7 +31,8 @@ namespace Application.Activities
         var activityInDb = await _context.Activities.FindAsync(request.Id);
 
         // throw error if activity is not found
-        if (activityInDb == null) throw new Exception("Could not find activity");
+        if (activityInDb == null)
+          throw new Exception("Could not find activity");
 
         // remove activity from database -- will require a saveChanges "commit"
         _context.Remove(activityInDb);
