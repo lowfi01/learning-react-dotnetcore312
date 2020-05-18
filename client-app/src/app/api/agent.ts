@@ -6,6 +6,12 @@ import IActivity from "../models/activity";
 // all api request will use this base
 axios.defaults.baseURL = "http://localhost:5000/api";
 
+// Add interceptor
+// - Note: we can intercept the request or the response coming back from the server.
+axios.interceptors.response.use(undefined, (error) => {
+  console.log(error.response);
+});
+
 const responseBody = (response: AxiosResponse) => response.data;
 
 // Add fake delay function against all api requests to simulate a production
