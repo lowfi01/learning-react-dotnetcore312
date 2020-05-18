@@ -1,6 +1,8 @@
 using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Errors;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -62,8 +64,10 @@ namespace Application.Activities
         if (activityInDb == null)
         {
           _logger.LogInformation("Could not find activity throwing exception");
-          throw new Exception("Could not find activity in db!");
+          throw new RestException(HttpStatusCode.NotFound, new { activity = "Not Found" });
         }
+
+
 
         // Use null coalessence operator to do or operator for a different value
         activityInDb.Title = request.Title ?? activityInDb.Title;

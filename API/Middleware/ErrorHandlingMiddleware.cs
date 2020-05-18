@@ -34,8 +34,11 @@ namespace API.Middleware
 
     private async Task HandleExceptionAsync(HttpContext context, Exception ex, ILogger<ErrorHandlingMiddleware> logger)
     {
+
       // holds our errors
       object errors = null;
+
+      logger.LogTrace("Handle Exception processing");
 
       // Check the exception types we will have in our application.
       // - Rest Exception type
@@ -72,7 +75,6 @@ namespace API.Middleware
 
         await context.Response.WriteAsync(result);
       }
-
 
     }
   }
