@@ -6,10 +6,16 @@ import IActivity from "../models/activity";
 // all api request will use this base
 axios.defaults.baseURL = "http://localhost:5000/api";
 
-// Add interceptor
-// - Note: we can intercept the request or the response coming back from the server.
+// Exception Handling Logic
+// - Add interceptor
+//   - Note: we can intercept the request or the response coming back from the server.
+// Note: Exceptions should be passed to out agent.ts, then to the component for redirection
+//    - the logic here is that we should be able to handle exceptions & then use the approate logic
+//    - we simply redirect user to NotFound Component
 axios.interceptors.response.use(undefined, (error) => {
-  console.log(error.response);
+  if (error.response.status === 404) {
+    throw error.response;
+  }
 });
 
 const responseBody = (response: AxiosResponse) => response.data;

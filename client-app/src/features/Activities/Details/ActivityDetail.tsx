@@ -24,11 +24,24 @@ const ActivityDetail: React.FC<RouteComponentProps<DetailParams>> = ({
   // NOTE - I only added this next line of code for reference.
   // const { id } = useParams<DetailParams>(); // also usable with params
   useEffect(() => {
-    loadActivity(match.params.id);
-  }, [match.params.id, loadActivity]);
+    loadActivity(match.params.id).catch((error) => {
+      // Note: Catching error chain.
+      //  - we are catching error that starts at out agent.ts
+      //    - we make a request for an activity detail but activity is not found,
+      //    - agent.ts, will recieve response & throw exception
+      //    - activityStore.ts, loading activity will catch the error & throw new exception
+      //    - ActivityDetail.tsx component, Who initiated the call to the data base for the
+      //      activity detail using, userEffect & loadActivity, will handle the exception
+      //    - As our objective is to push the user to the errors page, we just push them.
+      //    - Note: our router, will push all bad urls to our NotFound component, so we just
+      //      push user to a bad url.
+      history.push("/notfound");
+    });
+  }, [match.params.id, loadActivity, history]);
 
-  if (loadingInitial || !selectedActivity)
-    return <LoadingComponent content="Loading Activity" />;
+  if (loadingInitial) return <LoadingComponent content="Loading Activity" />;
+
+  if (!selectedActivity) return <h2>Not found</h2>;
 
   return (
     <Grid>

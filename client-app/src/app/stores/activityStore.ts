@@ -156,6 +156,8 @@ class ActivityStore {
         });
       } catch (error) {
         console.log("%c⧭", "color: #f2ceb6", error);
+        // Note: throw exception to ActivityDetails component
+        throw error;
       }
     } else {
       runInAction(`set activity of id: ${id}`, () => {
