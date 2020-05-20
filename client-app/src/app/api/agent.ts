@@ -3,6 +3,7 @@
 import axios, { AxiosResponse } from "axios";
 import IActivity from "../models/activity";
 import { history } from "../.."; // auto maps to index.* named files
+import { toast } from "react-toastify";
 
 // all api request will use this base
 axios.defaults.baseURL = "http://localhost:5000/api";
@@ -41,7 +42,12 @@ axios.interceptors.response.use(undefined, (error) => {
     history.push("/notfound");
   }
 
-  console.log(error.response);
+  // 500: internal server error
+  if (status === 500) {
+    toast.error("Server error - check terminal for more info!", {
+      autoClose: 5000,
+    });
+  }
 });
 
 const responseBody = (response: AxiosResponse) => response.data;

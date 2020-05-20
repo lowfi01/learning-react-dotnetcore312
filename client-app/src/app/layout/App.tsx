@@ -9,6 +9,11 @@ import {
   RouteComponentProps,
   Switch,
 } from "react-router-dom";
+
+// 3rd Part Components
+import { ToastContainer } from "react-toastify";
+
+// Components
 import HomePage from "../../features/Home/HomePage";
 import ActivityForm from "../../features/Activities/Form/ActivityForm";
 import ActivityDetail from "../../features/Activities/Details/ActivityDetail";
@@ -22,6 +27,7 @@ import NotFound from "./NotFound";
 const App: React.FC<RouteComponentProps> = ({ location }) => {
   return (
     <>
+      <ToastContainer position="bottom-right" />
       <Route exact path="/" component={HomePage} />
       <Route
         path={"/(.+)"} // conditionall render the navbar when not viewing the homepage
