@@ -2,6 +2,7 @@
 
 import axios, { AxiosResponse } from "axios";
 import IActivity from "../models/activity";
+import { history } from "../.."; // auto maps to index.* named files
 
 // all api request will use this base
 axios.defaults.baseURL = "http://localhost:5000/api";
@@ -9,13 +10,38 @@ axios.defaults.baseURL = "http://localhost:5000/api";
 // Exception Handling Logic
 // - Add interceptor
 //   - Note: we can intercept the request or the response coming back from the server.
-// Note: Exceptions should be passed to out agent.ts, then to the component for redirection
-//    - the logic here is that we should be able to handle exceptions & then use the approate logic
-//    - we simply redirect user to NotFound Component
+// Note: Prior to using redirect on condition, we would be throwing an exception.
+//   - throw error;
+//   - this method of custom history direct is far better.
 axios.interceptors.response.use(undefined, (error) => {
-  if (error.response.status === 404) {
-    throw error.response;
+  const { status, data, config } = error.response;
+
+  // Handle errors from API.
+  // - direct to NotFound.tsx component
+  // - push() to an invalid url will route to NotFound.tsx
+  //   - this logic is found in App.tsx
+
+  // 404: activity not found
+  if (status === 404) {
+    // use our custom history
+    // - we feed custom history to our low level Router component
+    //   which will contain navigation options even outside of our
+    //   component structure.
+    history.push("/notfound");
   }
+
+  // 400: invalid Guid
+  // - why would you use so many conditions to just check for guid?
+  //   - Answer: because there can be different types of status 400
+  if (
+    status === 400 &&
+    config.method === "get" &&
+    data.errors.hasOwnProperty("id") // check if object has property field
+  ) {
+    history.push("/notfound");
+  }
+
+  console.log(error.response);
 });
 
 const responseBody = (response: AxiosResponse) => response.data;

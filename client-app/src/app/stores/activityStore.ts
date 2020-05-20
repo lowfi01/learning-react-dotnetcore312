@@ -103,13 +103,13 @@ class ActivityStore {
       */
 
     return Object.entries(
-      sortedActivities.reduce((activities, activity) => {
+      sortedActivities.reduce((activitiesReduce, activity) => {
         // capture only date not time "2020-04-03T23:27:08"
         const key: string = activity.date.split("T")[0]; // "2020-04-03"
-        activities[key] = activities[key]
-          ? [...activities[key], activity]
+        activitiesReduce[key] = activitiesReduce[key]
+          ? [...activitiesReduce[key], activity]
           : [activity];
-        return activities;
+        return activitiesReduce;
       }, {} as { [key: string]: IActivity[] })
     );
   }
@@ -156,8 +156,6 @@ class ActivityStore {
         });
       } catch (error) {
         console.log("%c⧭", "color: #f2ceb6", error);
-        // Note: throw exception to ActivityDetails component
-        throw error;
       }
     } else {
       runInAction(`set activity of id: ${id}`, () => {
