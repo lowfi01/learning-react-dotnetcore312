@@ -15,6 +15,12 @@ axios.defaults.baseURL = "http://localhost:5000/api";
 //   - throw error;
 //   - this method of custom history direct is far better.
 axios.interceptors.response.use(undefined, (error) => {
+  // Network Error: server is probably down.
+  // - needs to be put above error.response deconstructor or it won't run
+  if (error.message === "Network Error" && !error.response) {
+    toast.error("Network error - make sure API is running!");
+  }
+
   const { status, data, config } = error.response;
 
   // Handle errors from API.
@@ -45,7 +51,7 @@ axios.interceptors.response.use(undefined, (error) => {
   // 500: internal server error
   if (status === 500) {
     toast.error("Server error - check terminal for more info!", {
-      autoClose: 5000,
+      autoClose: 5000, // implemented by default
     });
   }
 });
