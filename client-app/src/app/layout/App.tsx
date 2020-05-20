@@ -40,7 +40,7 @@ const App: React.FC<RouteComponentProps> = ({ location }) => {
                 <Route path="/activities/:id" component={ActivityDetail} />
                 <Route
                   key={location.key} // react-router key changes with new route forcing a new instance of the component
-                  path={["/createActivity", "/manage/:id"]}
+                  path={["/createActivity", "/manage/:id"]} // allow for reusable paths for ActivityForm component
                   component={ActivityForm}
                 />
                 <Route component={NotFound} />
