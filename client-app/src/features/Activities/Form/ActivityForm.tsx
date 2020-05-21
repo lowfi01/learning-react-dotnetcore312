@@ -13,6 +13,7 @@ import IActivity from "../../../app/models/activity";
 
 // Components
 import LoadingComponent from "../../../app/layout/LoadingComponent";
+import TextInput from "../../../app/common/form/TextInput";
 
 interface DetailParams {
   id: string;
@@ -98,7 +99,7 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
                   placeholder="title"
                   name="title"
                   value={activity.title}
-                  component="input"
+                  component={TextInput}
                 />
                 <Form.TextArea
                   rows={2}
