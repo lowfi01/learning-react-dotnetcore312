@@ -6,7 +6,7 @@ import { observer } from "mobx-react-lite";
 import ActivityStore from "../../../app/stores/activityStore";
 
 // models
-import IActivity from "../../../app/models/activity";
+import {IActivity} from "../../../app/models/activity";
 import ActivityItem from "./ActivityItem";
 
 const ActivityList: React.FC = () => {

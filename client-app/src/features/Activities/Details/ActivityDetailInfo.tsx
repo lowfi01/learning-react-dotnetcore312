@@ -1,7 +1,8 @@
 import React from "react";
 import { Segment, Grid, Icon } from "semantic-ui-react";
-import IActivity from "../../../app/models/activity";
+import {IActivity} from "../../../app/models/activity";
 import { observer } from "mobx-react-lite";
+import { format } from "date-fns";
 
 const ActivityDetailInfo: React.FC<{ activity: IActivity }> = ({
   activity,
@@ -24,7 +25,7 @@ const ActivityDetailInfo: React.FC<{ activity: IActivity }> = ({
             <Icon name="calendar" size="large" color="teal" />
           </Grid.Column>
           <Grid.Column width={15}>
-            <span>{activity.date}</span>
+            <span>{format(activity.date, "eeee do MMM" )} at {format(activity.date, "h:mm a" )}</span>
           </Grid.Column>
         </Grid>
       </Segment>

@@ -1,7 +1,9 @@
 import { observable, action, computed, configure, runInAction } from "mobx";
 import { createContext } from "react";
-import IActivity from "../models/activity";
+import {IActivity} from "../models/activity";
 import agent from "../api/agent";
+import { history } from "../..";
+import { toast } from "react-toastify";
 
 // Mobx configuration
 // - enable strict mode
@@ -38,7 +40,7 @@ class ActivityStore {
   groupActivitiesByDate(activities: IActivity[]) {
     // sort activities based on date in milliseconds.
     const sortedActivities = activities.sort(
-      (a, b) => Date.parse(a.date) - Date.parse(b.date)
+      (a, b) => a.date!.getTime() - b.date.getTime()
     );
 
     /*
@@ -105,7 +107,7 @@ class ActivityStore {
     return Object.entries(
       sortedActivities.reduce((activitiesReduce, activity) => {
         // capture only date not time "2020-04-03T23:27:08"
-        const key: string = activity.date.split("T")[0]; // "2020-04-03"
+        const key: string = activity.date.toISOString().split("T")[0]; // "2020-04-03"
         activitiesReduce[key] = activitiesReduce[key]
           ? [...activitiesReduce[key], activity]
           : [activity];
@@ -129,7 +131,7 @@ class ActivityStore {
       //   and work with strict mode.
       runInAction("loading activities populating", () => {
         activitivies.forEach((activity) => {
-          activity.date = activity.date.split(".")[0];
+          activity.date = new Date(activity.date);
           this.activityRegistry.set(activity.id, activity);
         });
       });
@@ -144,30 +146,62 @@ class ActivityStore {
     }
   };
 
-  @action loadActivity = async (id: string) => {
-    this.loadingInitial = true;
-    // add condition if no selected activity was selected by user.
-    if (!this.activityRegistry.has(id)) {
-      try {
-        const activityInDb: IActivity = await agent.Activities.details(id);
-        runInAction(`loading activity of id: ${id}`, () => {
-          // action wrapper for mobx strict
-          this.selectedActivity = activityInDb;
-        });
-      } catch (error) {
-        console.log("%c⧭", "color: #f2ceb6", error);
-      }
-    } else {
-      runInAction(`set activity of id: ${id}`, () => {
-        // action wrapper for mobx strict
-        this.selectedActivity = this.activityRegistry.get(id);
-      });
-    }
 
-    runInAction(`disable loading screen`, () => {
-      this.loadingInitial = false;
-    });
-  };
+  @action loadActivity = async (id: string) => {
+    let activity = this.getActivity(id);
+    if (activity) {
+      this.selectedActivity = activity;
+      return activity;
+    } else {
+      this.loadingInitial = true;
+      try {
+        activity = await agent.Activities.details(id);
+        runInAction('getting activity',() => {
+          activity.date = new Date(activity.date);
+          this.selectedActivity = activity;
+          this.activityRegistry.set(activity.id, activity);
+          this.loadingInitial = false;
+        })
+        return activity;
+      } catch (error) {
+        runInAction('get activity error', () => {
+          this.loadingInitial = false;
+        })
+        console.log(error);
+      }
+    }
+  }
+
+  // @action loadActivity = async (id: string) => {
+
+  //   this.loadingInitial = true;
+  //   // add condition if no selected activity was selected by user.
+  //   if (!this.activityRegistry.has(id)) {
+  //     try {
+  //       const activityInDb: IActivity = await agent.Activities.details(id);
+  //       runInAction(`loading activity of id: ${id}`, () => {
+  //         // action wrapper for mobx strict
+  //         activityInDb.date = new Date(activityInDb.date!);
+  //         this.selectedActivity = activityInDb;
+  //       });
+  //     } catch (error) {
+  //       console.log("%c⧭", "color: #f2ceb6", error);
+  //     }
+  //   } else {
+  //     runInAction(`set activity of id: ${id}`, () => {
+  //       // action wrapper for mobx strict
+  //       this.selectedActivity = this.activityRegistry.get(id);
+  //     });
+  //   }
+
+  //   runInAction(`disable loading screen`, () => {
+  //     this.loadingInitial = false;
+  //   });
+  // };
+
+  getActivity = (id: string) => {
+    return this.activityRegistry.get(id);
+  }
 
   // get activity from our activities array using activity id
   @action selectActivity = (id: string) => {
@@ -177,19 +211,20 @@ class ActivityStore {
 
   // creates activity by passing activity form data to our backend
   @action createActivity = async (activity: IActivity) => {
-    this.submitting = true;
+    this.submitting = true; // handles loading icon for buttons
     try {
       await agent.Activities.create(activity); // server only returns {} on success
       runInAction("creating activity", () => {
         this.activityRegistry.set(activity.id, activity);
         this.selectedActivity = activity;
       });
+      history.push(`/activities/${activity.id}`);
     } catch (error) {
-      console.log(error);
-    } finally {
       runInAction("creating activity disable submitting", () => {
-        this.submitting = false;
+        this.submitting = false; // disable loading icon for button
       });
+      toast.error("problem submitting data");
+      console.log(error.response)
     }
   };
 
@@ -201,10 +236,12 @@ class ActivityStore {
         // action wrapper for mobx strict
         this.activityRegistry.set(activity.id, activity);
         this.selectedActivity = activity;
+        this.submitting = false;
       });
+      history.push(`/activities/${activity.id}`);
     } catch (error) {
-      console.log(error);
-    } finally {
+      toast.error("problem submitting data");
+      console.log(error.response);
       runInAction("editing activity disable submitting", () => {
         this.submitting = false;
       });

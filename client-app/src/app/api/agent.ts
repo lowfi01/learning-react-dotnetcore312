@@ -1,7 +1,7 @@
 // we will define api calls here.
 
 import axios, { AxiosResponse } from "axios";
-import IActivity from "../models/activity";
+import {IActivity} from "../models/activity";
 import { history } from "../.."; // auto maps to index.* named files
 import { toast } from "react-toastify";
 
@@ -54,6 +54,8 @@ axios.interceptors.response.use(undefined, (error) => {
       autoClose: 5000, // implemented by default
     });
   }
+
+  throw error;
 });
 
 const responseBody = (response: AxiosResponse) => response.data;

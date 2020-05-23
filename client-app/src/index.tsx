@@ -5,12 +5,17 @@ import { createBrowserHistory } from "history";
 import App from "./app/layout/App";
 import "react-toastify/dist/ReactToastify.min.css";
 import "./app/layout/styles.css";
+import 'react-widgets/dist/css/react-widgets.css';
+import dateFnsLocalizer from "react-widgets-date-fns";
 import "semantic-ui-css/semantic.min.css";
 import * as serviceWorker from "./serviceWorker";
 import ScrollToTop from "./app/layout/ScrollToTop";
 
 // export history so as we can import it within our state management tools
 export const history = createBrowserHistory();
+
+// implement dateFnsLocalizer, required for datepicker widget & allows for local time.
+dateFnsLocalizer();
 
 ReactDOM.render(
   // Replace BrowserRouter with Router.

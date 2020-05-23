@@ -43,6 +43,8 @@ namespace Application.Activities
       public async Task<List<Activity>> Handle(Query request, CancellationToken cancellationToken)
       {
 
+        // throw new System.Exception(); // testing agent.ts error handling & toast messages
+
         // Example viewing cancellationToken
         // -- Note we are adding a delay to view this example within out api requirest (postman etc.)
         // try

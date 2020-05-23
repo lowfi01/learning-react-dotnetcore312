@@ -7,7 +7,7 @@ import { observer } from "mobx-react-lite";
 import ActivityStore from "../../../app/stores/activityStore";
 
 // // Models
-// import IActivity from "../../../app/models/activity";
+// import {IActivity} from "../../../app/models/activity";
 
 // Components
 import ActivityList from "./ActivityList";
