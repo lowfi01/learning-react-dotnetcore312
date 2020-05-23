@@ -4,6 +4,7 @@ import { observer } from "mobx-react-lite";
 import { RouteComponentProps } from "react-router-dom";
 import { Form as FinalForm, Field } from "react-final-form";
 import { v4 as uuid } from "uuid";
+
 // State management tool
 import ActivityStore from "../../../app/stores/activityStore";
 
@@ -18,7 +19,7 @@ import DateInput from "../../../app/common/form/DateInput";
 
 // utils
 import { category } from "../../../app/common/options/categoryOptions";
-import {combineDateAndTime} from "../../../app/common/util/util";
+import { combineDateAndTime } from "../../../app/common/util/util";
 import { combineValidators, isRequired, composeValidators, hasLengthGreaterThan } from 'revalidate';
 
 // validation object
@@ -83,21 +84,6 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
     loadActivity
   ]);
 
-  // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-  //   if (activity.id.length === 0) {
-  //     const newActivity = {
-  //       ...activity,
-  //       id: uuid(),
-  //     };
-  //     activityStore.createActivity(newActivity).then(() => {
-  //       history.push(`/activities/${newActivity.id}`);
-  //     });
-  //   } else {
-  //     activityStore.editActivity(activity).then(() => {
-  //       history.push(`/activities/${match.params.id}`);
-  //     });
-  //   }
-  // };
 
   const handleFinalFormSubmit = (values: any) => {
     // Combine Date & time objects to a single Date object
