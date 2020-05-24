@@ -1,9 +1,11 @@
 using API.Middleware;
 using Application.Activities;
+using Domain;
 using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,7 +38,16 @@ namespace API
           cfg.RegisterValidatorsFromAssemblyContaining<Create>();
         });
 
-
+      // Add Asp.netCore Identity
+      // - services.AddIdentity,
+      //   - used with mvc where serving our pages from the server using razor libary (cookie authentication method)
+      //   - has roles & users
+      // - services.AddIdentityCore,
+      //   - used to specifiy user types but no roles by default.
+      var builder = services.AddIdentityCore<AppUser>(); // register service
+      var identityBuilder = new IdentityBuilder(builder.UserType, builder.Services); // create new instance of identity type
+      identityBuilder.AddEntityFrameworkStores<DataContext>(); // register the store, which is our data context
+      identityBuilder.AddSignInManager<SignInManager<AppUser>>(); // register the Sign in manager & user type
 
 
       // End CORS - cross origin request blocked
@@ -70,7 +81,6 @@ namespace API
       services.AddMediatR(typeof(List.Handler).Assembly);
 
 
-      //
 
     }
 
@@ -85,7 +95,6 @@ namespace API
       if (env.IsDevelopment())
       {
         // app.UseDeveloperExceptionPage();
-
 
       }
 
