@@ -51,6 +51,7 @@ namespace API.Controllers
     // -- Handle Query string
     //    -- within the HttpGet Attribute
     //    -- pass expect Guid Id within the param of the API request
+
     [HttpGet("{id}")]
     public async Task<ActionResult<Activity>> Details(Guid id)
     {
