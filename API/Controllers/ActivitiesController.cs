@@ -9,19 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-  // MVC attributes
-  [Route("api/[controller]")]
 
-  // [ApiController]
-  // - Magic! this will automatically validate System.ComponentModel.DataAnnotations,
-  //   which will give automatic 400 responses.
-  //   - So if you want to debug your API and you have data annotations, just comment this out. :D
-  //     though in this demo we will be using fluent validation vs data annotation
-  //   - prior to ApiController attribute we would need to check the modelState outselves.
-  //     create(body request) { if(!ModelState.isValid){ return BadRequest(modelState); }  }
-  [ApiController]
-
-  public class ActivitiesController : ControllerBase
+  public class ActivitiesController : BaseController // inherit form custom base class which provides mediator
   {
     // Thin API controller model
     // - only handles response and requests
@@ -38,14 +27,8 @@ namespace API.Controllers
     // -- Asks a question... (can we fetch data?), answered by Application Layer (business logic)
     //    -- uses mediator to get the data we need.
 
-    // Inject and use MediatorR
-    // -- we are clearly injecting MediatorR here, but still requing it's package.
-    private readonly IMediator _mediator;
 
-    public ActivitiesController(IMediator mediator)
-    {
-      _mediator = mediator;
-    }
+
 
     // HTTP GET Activities
     // -- CancellationToken allows users to pass a cancelation request while awaiting API request
@@ -60,7 +43,7 @@ namespace API.Controllers
 
       // Using MediatorR
       // -- We send a message to our list query to fetch.
-      return await _mediator.Send(new List.Query(), ct);
+      return await Mediator.Send(new List.Query(), ct);  // Mediator is the protected field coming from base controller
 
     }
 
@@ -68,14 +51,13 @@ namespace API.Controllers
     // -- Handle Query string
     //    -- within the HttpGet Attribute
     //    -- pass expect Guid Id within the param of the API request
-
     [HttpGet("{id}")]
     public async Task<ActionResult<Activity>> Details(Guid id)
     {
 
       // Send Mediator send request with Query message
       // -- initialize our Query prop of Id using the prop initializer syntax
-      return await _mediator.Send(new Details.Query { Id = id });
+      return await Mediator.Send(new Details.Query { Id = id });  // Mediator is the protected field coming from base controller
 
     }
 
@@ -94,7 +76,7 @@ namespace API.Controllers
       // Note - this is the approach we would do prior to [ApiAttribute]
       // if (!ModelState.IsValid) return BadRequest(ModelState); // should return 400 if data attribute fails
 
-      return await _mediator.Send(command);
+      return await Mediator.Send(command);  // Mediator is the protected field coming from base controller
     }
 
 
@@ -102,13 +84,13 @@ namespace API.Controllers
     public async Task<ActionResult<Unit>> Edit(Guid id, Edit.Command command)
     {
       command.Id = id; // attach the id to the command object
-      return await _mediator.Send(command);
+      return await Mediator.Send(command);  // Mediator is the protected field coming from base controller
     }
 
     [HttpDelete("{id}")]
     public async Task<ActionResult<Unit>> Edit(Guid id)
     {
-      return await _mediator.Send(new Delete.Command { Id = id });
+      return await Mediator.Send(new Delete.Command { Id = id });  // Mediator is the protected field coming from base controller
     }
 
   }
