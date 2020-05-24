@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,8 +30,12 @@ namespace API
         {
           logger.LogTrace("Attempting to migrate database if required");
           var context = services.GetRequiredService<DataContext>();
+          var userManger = services.GetRequiredService<UserManager<AppUser>>();
           context.Database.Migrate();
-          Seed.SeedData(context);
+          // initialize seeding of database
+          // - seeds list of acitivites, using the Data context - (setup in startup.cs)
+          // - seeds Users, using the UserManager - (setup in startup.cs)
+          Seed.SeedData(context, userManger).Wait(); // force async task to wait! as SeedData is a async / await
         }
         catch (Exception ex)
         {

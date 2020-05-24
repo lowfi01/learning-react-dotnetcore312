@@ -48,6 +48,7 @@ namespace API
       var identityBuilder = new IdentityBuilder(builder.UserType, builder.Services); // create new instance of identity type
       identityBuilder.AddEntityFrameworkStores<DataContext>(); // register the store, which is our data context
       identityBuilder.AddSignInManager<SignInManager<AppUser>>(); // register the Sign in manager & user type
+      services.AddAuthentication();
 
 
       // End CORS - cross origin request blocked
