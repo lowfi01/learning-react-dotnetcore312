@@ -17,7 +17,7 @@ namespace Application.User
   {
 
     // query object which should redine the content of our request data being passed
-    public class Query : IRequest<AppUser>
+    public class Query : IRequest<User> // Return user!
     {
       public string Email { get; set; }
       public string Password { get; set; }
@@ -34,9 +34,7 @@ namespace Application.User
       }
     }
 
-    // Note: we shouldn't be returning the AppUser
-    //       - we are just testing the login :D
-    public class Handler : IRequestHandler<Query, AppUser> // handler will query, ALL APPUSERS
+    public class Handler : IRequestHandler<Query, User> // handler will return user
     {
       private readonly ILogger<Login> _logger;
       private readonly UserManager<AppUser> _userManager;
@@ -49,7 +47,7 @@ namespace Application.User
         this._logger = logger;
       }
 
-      public async Task<AppUser> Handle(Query request, CancellationToken cancellationToken)
+      public async Task<User> Handle(Query request, CancellationToken cancellationToken)
       {
         // check if the user exists
         var user = await _userManager.FindByEmailAsync(request.Email);
@@ -65,7 +63,15 @@ namespace Application.User
         if (result.Succeeded)
         {
           // TODO: generate token
-          return user;
+
+          // return User data
+          return new User
+          {
+            DisplayName = user.DisplayName,
+            Token = "This will be a token",
+            Username = user.UserName,
+            Image = null,
+          };
         }
 
 
