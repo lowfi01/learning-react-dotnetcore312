@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Application.Activities;
 using Domain;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -53,6 +54,7 @@ namespace API.Controllers
     //    -- pass expect Guid Id within the param of the API request
 
     [HttpGet("{id}")]
+    [Authorize] // authorize is defined in Startup.cs (only allowed if bearer token in header is correct)
     public async Task<ActionResult<Activity>> Details(Guid id)
     {
 

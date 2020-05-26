@@ -36,7 +36,7 @@ namespace Infrastructure.Security
       // Note: this is the secret key that will sign each of our tokens, giving access to anyone!!
       // Note: argument takes a string in a byte array
       // Note: this is a naive approach of storing the secret string!!!!!!!!!!!!
-      var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super secret key that will sign all tokens"));
+      var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super secret key that will sign all tokens")); //token key
 
       // generate credientials
       var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature); // takes key & algorithm to hash the key.
