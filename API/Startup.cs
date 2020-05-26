@@ -1,7 +1,9 @@
 using API.Middleware;
 using Application.Activities;
+using Application.Interfaces;
 using Domain;
 using FluentValidation.AspNetCore;
+using Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -80,6 +82,14 @@ namespace API
       //      -- this is because it is smart enough to understand that it can find all
       //      -- the other handlers within that project passed
       services.AddMediatR(typeof(List.Handler).Assembly);
+
+      // Inject IJwtGenerator * Generator class into our application.
+      // - this will make avaiable out IJwtGenerator & the JwtGenerator class, which implements createtoken(AppUser user) => string;
+      // Note: we inject these services, through the contructors of our classes :D  className(inject service); we
+      //      have access to them & the methods inside!!!
+      // Note: by using the JwtGenerator, we will be using the concreate class is that is avaialable inside our infrustructor project.
+      services.AddScoped<IJwtGenerator, JwtGenerator>();
+
 
 
 

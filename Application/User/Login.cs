@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Errors;
+using Application.Interfaces;
 using Domain;
 using FluentValidation;
 using MediatR;
@@ -37,14 +38,16 @@ namespace Application.User
     public class Handler : IRequestHandler<Query, User> // handler will return user
     {
       private readonly ILogger<Login> _logger;
+      private readonly IJwtGenerator _jwtGenerator;
       private readonly UserManager<AppUser> _userManager;
       private readonly SignInManager<AppUser> _signInManager;
 
-      public Handler(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ILogger<Login> logger)
+      public Handler(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ILogger<Login> logger, IJwtGenerator jwtGenerator)
       {
         this._userManager = userManager;
         this._signInManager = signInManager;
         this._logger = logger;
+        this._jwtGenerator = jwtGenerator; // Note we get this through dependecy inject (service.AddScope<>) startup.cs
       }
 
       public async Task<User> Handle(Query request, CancellationToken cancellationToken)
@@ -62,13 +65,19 @@ namespace Application.User
 
         if (result.Succeeded)
         {
-          // TODO: generate token
+          // Generate token.
+          // - because we are using an interface, all our applicaiton project knows about is that,
+          //   we have an interface, that has a method, which sends a user & returns a string!
+          //   - it does not know about any of the logic we have within our JwtGenerator.
+          //   - Note: we associate the class which uses the interface within startup.cs when we add it as a service(dependency injection)
+          //           - service & it's implemention,  Interface which implements this class <IJwtGenerator, JwtGenerator>
+          var jwtToken = _jwtGenerator.CreateToken(user);
 
           // return User data
           return new User
           {
             DisplayName = user.DisplayName,
-            Token = "This will be a token",
+            Token = jwtToken, // we can technicall just pass _jwtGenerator.CreateToken(user), but i wanted to add notes
             Username = user.UserName,
             Image = null,
           };
