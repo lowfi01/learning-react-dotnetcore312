@@ -56,7 +56,13 @@ namespace API
 
 
       // note we should be hard coding the key, JwtGenerator.cs also has hardcoded vale
-      var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super secret key that will sign all tokens"));
+      // - Note: Configuration["TokenKey"], is set only in the local development enviroment
+      //   Note: there are enviroment keys we can use to replace this once in production.
+      //         - this is only aviaible in development mode & also on the host computer.... this will break if you don't do these steps
+      //             dotnet user-secrets init -p API/  - required to initialize user secrets
+      //             dotnet user-secrets set "TokenKey" "super secret key that will sign all tokens" -m API/    - set a new user secret
+      //             dotnet user-secrets list -m API/   - show all user secrets
+      var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["TokenKey"]));
 
       // this will provide us with the ability to authenticate users before they have access to our API
       // - Note: once we add this to our configure method, with out other auto run on startup methods... eg middleware

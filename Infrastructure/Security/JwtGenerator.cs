@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using Application.Interfaces;
 using Domain;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure.Security
@@ -13,6 +14,18 @@ namespace Infrastructure.Security
   // Note: We inject IJwtGenerator into our Application, within the startup class.
   public class JwtGenerator : IJwtGenerator
   {
+    // - Note: Configuration["TokenKey"], is set only in the local development enviroment
+    //   Note: there are enviroment keys we can use to replace this once in production.
+    //         - this is only aviaible in development mode & also on the host computer.... this will break if you don't do these steps
+    //             dotnet user-secrets init -p API/  - required to initialize user secrets
+    //             dotnet user-secrets set "TokenKey" "super secret key that will sign all tokens" -m API/    - set a new user secret
+    //             dotnet user-secrets list -m API/   - show all user secrets
+    private readonly SymmetricSecurityKey _key;
+    public JwtGenerator(IConfiguration config)
+    {
+      this._key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
+    }
+
     public string CreateToken(AppUser user)
     {
       // Todo list
@@ -36,7 +49,9 @@ namespace Infrastructure.Security
       // Note: this is the secret key that will sign each of our tokens, giving access to anyone!!
       // Note: argument takes a string in a byte array
       // Note: this is a naive approach of storing the secret string!!!!!!!!!!!!
-      var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super secret key that will sign all tokens")); //token key
+
+      // -- Note: we are now use dotnet user-secrets store...
+      var key = _key; //token key Encoding.UTF8.GetBytes("super secret key that will sign all tokens")
 
       // generate credientials
       var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature); // takes key & algorithm to hash the key.

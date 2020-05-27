@@ -28,9 +28,6 @@ namespace API.Controllers
     // -- Asks a question... (can we fetch data?), answered by Application Layer (business logic)
     //    -- uses mediator to get the data we need.
 
-
-
-
     // HTTP GET Activities
     // -- CancellationToken allows users to pass a cancelation request while awaiting API request
     //    -- doing this prevents the database from being overwhelmed with requests..
@@ -52,7 +49,6 @@ namespace API.Controllers
     // -- Handle Query string
     //    -- within the HttpGet Attribute
     //    -- pass expect Guid Id within the param of the API request
-
     [HttpGet("{id}")]
     [Authorize] // authorize is defined in Startup.cs (only allowed if bearer token in header is correct)
     public async Task<ActionResult<Activity>> Details(Guid id)
