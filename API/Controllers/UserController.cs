@@ -1,10 +1,12 @@
 using System.Threading.Tasks;
 using Application.User;
 using Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+  [AllowAnonymous] // this allows access without authentication (as Auth is setup globally in startup)
   public class UserController : BaseController
   {
     [HttpPost("login")]

@@ -21,6 +21,7 @@ namespace Infrastructure.Security
     //             dotnet user-secrets set "TokenKey" "super secret key that will sign all tokens" -m API/    - set a new user secret
     //             dotnet user-secrets list -m API/   - show all user secrets
     private readonly SymmetricSecurityKey _key;
+
     public JwtGenerator(IConfiguration config)
     {
       this._key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
