@@ -50,7 +50,7 @@ namespace API.Controllers
     //    -- within the HttpGet Attribute
     //    -- pass expect Guid Id within the param of the API request
     [HttpGet("{id}")]
-    [Authorize] // authorize is defined in Startup.cs (only allowed if bearer token in header is correct)
+    // [Authorize] // authrized attribute is no longer needed as we have a global policy in place to prevent access!!
     public async Task<ActionResult<Activity>> Details(Guid id)
     {
 
