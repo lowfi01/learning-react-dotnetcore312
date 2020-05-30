@@ -119,6 +119,13 @@ namespace API
       // Note: by using the JwtGenerator, we will be using the concreate class is that is avaialable inside our infrustructor project.
       services.AddScoped<IJwtGenerator, JwtGenerator>();
 
+
+      // Inject UserAccessor as a service!! (Dependency injection)
+      // - Allows us to get username from token.
+      //   - this uses the HTTP context to check the user object & check list of claims... to find the username within our token.
+      // - Note: we should now be able to call IUserAccessor to access UserAccessor methods... thus hiding implementation.
+      services.AddScoped<IUserAccessor, UserAccessor>();
+
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
