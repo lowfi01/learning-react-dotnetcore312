@@ -15,5 +15,12 @@ namespace API.Controllers
       // Note: password = Password12345+
       return await Mediator.Send(query); // the query handler should return user in this version
     }
+
+    [HttpPost("register")]
+    public async Task<ActionResult<User>> Register(Register.Command cmd)
+    {
+      // Note: password = Password12345+
+      return await Mediator.Send(cmd);
+    }
   }
 }
