@@ -4,6 +4,7 @@ import axios, { AxiosResponse } from "axios";
 import {IActivity} from "../models/activity";
 import { history } from "../.."; // auto maps to index.* named files
 import { toast } from "react-toastify";
+import { IUser, IUserFormValues } from "../models/User";
 
 // all api request will use this base
 axios.defaults.baseURL = "http://localhost:5000/api";
@@ -69,6 +70,7 @@ const sleep = (ms: number) => (response: AxiosResponse) =>
     setTimeout(() => resolve(response), ms)
   );
 
+// base requests for all standard CRUD operations
 const requests = {
   // reusable requests
   get: (url: string) => axios.get(url).then(sleep(1200)).then(responseBody),
@@ -80,15 +82,22 @@ const requests = {
     axios.delete(url).then(sleep(1200)).then(responseBody),
 };
 
+// Request specific to Activities
 const Activities = {
-  list: (): Promise<IActivity[]> => requests.get("/Activities"),
-  details: (id: string) => requests.get(`/Activities/${id}`),
+  list: (): Promise<IActivity[]> => requests.get("/Activities"),  // list of all activities
+  details: (id: string) => requests.get(`/Activities/${id}`), // get activity of id
   create: (activity: IActivity) => requests.post(`/Activities`, activity),
-  update: (activity: IActivity) =>
-    requests.put(`/Activities/${activity.id}`, activity),
+  update: (activity: IActivity) => requests.put(`/Activities/${activity.id}`, activity),
   delete: (id: string) => requests.delete(`/Activities/${id}`),
 };
 
+const User = {
+  current: (): Promise<IUser> => requests.get("/users"),
+  login: (userLogin: IUserFormValues): Promise<IUser> => requests.post("/users/login", userLogin),
+  register: (userRegister: IUserFormValues): Promise<IUser> => requests.post("/users/register", userRegister),
+}
+
 export default {
   Activities,
+  User
 };
