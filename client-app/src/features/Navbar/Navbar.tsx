@@ -4,13 +4,14 @@ import { Menu, Container, Button } from "semantic-ui-react";
 import ActivityStore from "../../app/stores/activityStore";
 import { observer } from "mobx-react-lite";
 import { NavLink } from "react-router-dom";
+import { RootStoreContext } from "../../app/stores/rootStore";
 
 interface IProp {
   //
 }
 
 const Navbar: React.FC<IProp> = () => {
-  const activityStore = useContext(ActivityStore);
+  const { activityStore } = useContext(RootStoreContext); // access activity store via root
   return (
     <Menu fixed="top" inverted>
       <Container>

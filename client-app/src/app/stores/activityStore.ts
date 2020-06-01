@@ -4,6 +4,7 @@ import {IActivity} from "../models/activity";
 import agent from "../api/agent";
 import { history } from "../..";
 import { toast } from "react-toastify";
+import { RootStore } from "./rootStore";
 
 // Mobx configuration
 // - enable strict mode
@@ -14,7 +15,13 @@ configure({
 });
 
 // State management
-class ActivityStore {
+export default class ActivityStore {
+  rootStore: RootStore;
+
+  constructor(rootStore: RootStore){
+    this.rootStore = rootStore // rootStore will give us access to all other Stores & their observers, methods & actions etc...
+  }
+
   // Observable maps
   // - used for arrays of items,
   // - gives easy key: value pair structures
@@ -289,6 +296,3 @@ class ActivityStore {
     this.selectedActivity = null;
   };
 }
-
-// create new instance of AcitivtyStore.
-export default createContext(new ActivityStore());

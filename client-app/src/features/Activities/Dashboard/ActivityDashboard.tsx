@@ -12,6 +12,7 @@ import ActivityStore from "../../../app/stores/activityStore";
 // Components
 import ActivityList from "./ActivityList";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
+import { RootStoreContext } from "../../../app/stores/rootStore";
 // import ActivityDetail from "../Details/ActivityDetail";
 // import ActivityForm from "../Form/ActivityForm";
 
@@ -20,7 +21,7 @@ interface IProps {
 }
 
 const ActivityDashboard: React.FC<IProps> = () => {
-  const { loadActivities, loadingInitial } = useContext(ActivityStore); // access activity store (mobx)
+  const { activityStore: {loadActivities, loadingInitial} } = useContext(RootStoreContext); // access activity store via root
 
   useEffect(() => {
     loadActivities();

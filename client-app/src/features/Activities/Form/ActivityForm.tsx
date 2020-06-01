@@ -21,6 +21,7 @@ import DateInput from "../../../app/common/form/DateInput";
 import { category } from "../../../app/common/options/categoryOptions";
 import { combineDateAndTime } from "../../../app/common/util/util";
 import { combineValidators, isRequired, composeValidators, hasLengthGreaterThan } from 'revalidate';
+import { RootStoreContext } from "../../../app/stores/rootStore";
 
 // validation object
 // - will do the validation for our form fields
@@ -47,7 +48,7 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
   match,
   history,
 }) => {
-  const activityStore = useContext(ActivityStore); // import and use mobx ActivityStore
+  const { activityStore } = useContext(RootStoreContext); // access activity store via root
   const {loadActivity, loadingInitial, createActivity, editActivity } = activityStore;
 
   // State - Activity {}

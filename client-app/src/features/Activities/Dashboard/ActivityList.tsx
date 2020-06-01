@@ -4,13 +4,14 @@ import { observer } from "mobx-react-lite";
 
 // state management
 import ActivityStore from "../../../app/stores/activityStore";
+import { RootStoreContext } from "../../../app/stores/rootStore";
 
 // models
 import {IActivity} from "../../../app/models/activity";
 import ActivityItem from "./ActivityItem";
 
 const ActivityList: React.FC = () => {
-  const { activitiesByDate } = useContext(ActivityStore);
+  const { activityStore: {activitiesByDate} } = useContext(RootStoreContext); // access activity store via root
   return (
     <>
       {activitiesByDate.map(([group, activities]) => (
