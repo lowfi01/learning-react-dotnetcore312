@@ -1,6 +1,15 @@
 import ActivityStore from "./activityStore";
 import UserStore from "./userStore";
 import { createContext } from "react";
+import { configure } from "mobx";
+
+// Mobx configuration
+// - enable strict mode
+// - forces all state mutations to be run
+//   only when wrapped in an action
+configure({
+  enforceActions: "always",
+});
 
 export class RootStore {
   activityStore: ActivityStore;
@@ -14,6 +23,5 @@ export class RootStore {
     this.userStore = new UserStore(this);
   }
 }
-
 
 export const RootStoreContext = createContext(new RootStore());

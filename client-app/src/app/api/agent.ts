@@ -56,7 +56,7 @@ axios.interceptors.response.use(undefined, (error) => {
     });
   }
 
-  throw error;
+  throw error.response; // better to throw error.response as this will return a proper error object
 });
 
 const responseBody = (response: AxiosResponse) => response.data;
@@ -92,9 +92,9 @@ const Activities = {
 };
 
 const User = {
-  current: (): Promise<IUser> => requests.get("/users"),
-  login: (userLogin: IUserFormValues): Promise<IUser> => requests.post("/users/login", userLogin),
-  register: (userRegister: IUserFormValues): Promise<IUser> => requests.post("/users/register", userRegister),
+  current: (): Promise<IUser> => requests.get("/user"),
+  login: (userLogin: IUserFormValues): Promise<IUser> => requests.post("/user/login", userLogin),
+  register: (userRegister: IUserFormValues): Promise<IUser> => requests.post("/user/register", userRegister),
 }
 
 export default {

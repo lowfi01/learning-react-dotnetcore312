@@ -18,6 +18,7 @@ import HomePage from "../../features/Home/HomePage";
 import ActivityForm from "../../features/Activities/Form/ActivityForm";
 import ActivityDetail from "../../features/Activities/Details/ActivityDetail";
 import NotFound from "./NotFound";
+import LoginForm from "../../features/User/LoginForm";
 
 // us withRouter HOC to give access to all of the react-router-dom proms & location.
 // - location will give us access to key.
@@ -43,6 +44,7 @@ const App: React.FC<RouteComponentProps> = ({ location }) => {
                   path={["/createActivity", "/manage/:id"]} // allow for reusable paths for ActivityForm component
                   component={ActivityForm}
                 />
+                <Route path="/login" component={LoginForm}/>
                 <Route component={NotFound} />
               </Switch>
             </Container>

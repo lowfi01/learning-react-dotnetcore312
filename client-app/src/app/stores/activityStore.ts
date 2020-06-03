@@ -1,25 +1,16 @@
-import { observable, action, computed, configure, runInAction } from "mobx";
-import { createContext } from "react";
-import {IActivity} from "../models/activity";
+import { observable, action, computed, runInAction } from "mobx";
+import { IActivity } from "../models/activity";
 import agent from "../api/agent";
 import { history } from "../..";
 import { toast } from "react-toastify";
 import { RootStore } from "./rootStore";
 
-// Mobx configuration
-// - enable strict mode
-// - forces all state mutations to be run
-//   only when wrapped in an action
-configure({
-  enforceActions: "always",
-});
-
 // State management
 export default class ActivityStore {
   rootStore: RootStore;
 
-  constructor(rootStore: RootStore){
-    this.rootStore = rootStore // rootStore will give us access to all other Stores & their observers, methods & actions etc...
+  constructor(rootStore: RootStore) {
+    this.rootStore = rootStore; // rootStore will give us access to all other Stores & their observers, methods & actions etc...
   }
 
   // Observable maps
@@ -153,7 +144,6 @@ export default class ActivityStore {
     }
   };
 
-
   @action loadActivity = async (id: string) => {
     let activity = this.getActivity(id);
     if (activity) {
@@ -163,21 +153,21 @@ export default class ActivityStore {
       this.loadingInitial = true;
       try {
         activity = await agent.Activities.details(id);
-        runInAction('getting activity',() => {
+        runInAction("getting activity", () => {
           activity.date = new Date(activity.date);
           this.selectedActivity = activity;
           this.activityRegistry.set(activity.id, activity);
           this.loadingInitial = false;
-        })
+        });
         return activity;
       } catch (error) {
-        runInAction('get activity error', () => {
+        runInAction("get activity error", () => {
           this.loadingInitial = false;
-        })
+        });
         console.log(error);
       }
     }
-  }
+  };
 
   // @action loadActivity = async (id: string) => {
 
@@ -208,7 +198,7 @@ export default class ActivityStore {
 
   getActivity = (id: string) => {
     return this.activityRegistry.get(id);
-  }
+  };
 
   // get activity from our activities array using activity id
   @action selectActivity = (id: string) => {
@@ -231,7 +221,7 @@ export default class ActivityStore {
         this.submitting = false; // disable loading icon for button
       });
       toast.error("problem submitting data");
-      console.log(error.response)
+      console.log(error.response);
     }
   };
 
