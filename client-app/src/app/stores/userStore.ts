@@ -36,6 +36,22 @@ export default class UserStore {
   @action logout = () => {
     this.rootStore.commonStore.setToken(null);
     this.user = null;
-    history.push('/');
+    history.push("/");
+  };
+
+  // Fetch user..
+  // - this will ask for user, our API holds the logic to identify
+  //   the user based on the token we pass up. so basically if no token
+  //   then we don't have a user currently logged in!!
+  //   Note: we store the token on login to localStorage (very naive)
+  @action getUser = async () => {
+    try {
+      const user = await agent.User.current();
+      runInAction("fetch & storing user", () => {
+        this.user = user;
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 }

@@ -1,7 +1,7 @@
 // we will define api calls here.
 
 import axios, { AxiosResponse, AxiosRequestConfig } from "axios";
-import {IActivity} from "../models/activity";
+import { IActivity } from "../models/activity";
 import { history } from "../.."; // auto maps to index.* named files
 import { toast } from "react-toastify";
 import { IUser, IUserFormValues } from "../models/User";
@@ -12,14 +12,16 @@ axios.defaults.baseURL = "http://localhost:5000/api";
 // Handle requests
 // - Assign jwt token to request header as Bearer token.
 // - else we throw error if token does not exist.
-axios.interceptors.request.use((config: AxiosRequestConfig) => {
-  const token = window.localStorage.getItem('jwt');
-  if (token) config.headers.Authorization = `Bearer ${token}`;
-  return config;
-}, error => {
-  return Promise.reject(error);  // handle errors as a promise.
-})
-
+axios.interceptors.request.use(
+  (config: AxiosRequestConfig) => {
+    const token = window.localStorage.getItem("jwt");
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error); // handle errors as a promise.
+  }
+);
 
 // Exception Handling Logic
 // - Add interceptor
@@ -96,20 +98,23 @@ const requests = {
 
 // Request specific to Activities
 const Activities = {
-  list: (): Promise<IActivity[]> => requests.get("/Activities"),  // list of all activities
+  list: (): Promise<IActivity[]> => requests.get("/Activities"), // list of all activities
   details: (id: string) => requests.get(`/Activities/${id}`), // get activity of id
   create: (activity: IActivity) => requests.post(`/Activities`, activity),
-  update: (activity: IActivity) => requests.put(`/Activities/${activity.id}`, activity),
+  update: (activity: IActivity) =>
+    requests.put(`/Activities/${activity.id}`, activity),
   delete: (id: string) => requests.delete(`/Activities/${id}`),
 };
 
 const User = {
   current: (): Promise<IUser> => requests.get("/user"),
-  login: (userLogin: IUserFormValues): Promise<IUser> => requests.post("/user/login", userLogin),
-  register: (userRegister: IUserFormValues): Promise<IUser> => requests.post("/user/register", userRegister),
-}
+  login: (userLogin: IUserFormValues): Promise<IUser> =>
+    requests.post("/user/login", userLogin),
+  register: (userRegister: IUserFormValues): Promise<IUser> =>
+    requests.post("/user/register", userRegister),
+};
 
 export default {
   Activities,
-  User
+  User,
 };

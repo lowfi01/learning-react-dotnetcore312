@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { Container } from "semantic-ui-react";
 import Navbar from "../../features/Navbar/Navbar";
 import ActivityDashboard from "../../features/Activities/Dashboard/ActivityDashboard";
@@ -19,6 +19,8 @@ import ActivityForm from "../../features/Activities/Form/ActivityForm";
 import ActivityDetail from "../../features/Activities/Details/ActivityDetail";
 import NotFound from "./NotFound";
 import LoginForm from "../../features/User/LoginForm";
+import { RootStoreContext } from "../stores/rootStore";
+import LoadingComponent from "./LoadingComponent";
 
 // us withRouter HOC to give access to all of the react-router-dom proms & location.
 // - location will give us access to key.
@@ -26,6 +28,26 @@ import LoginForm from "../../features/User/LoginForm";
 //   we use this in place of componentDidRecieveProps
 //   https://reactjs.org/blog/2018/06/07/you-probably-dont-need-derived-state.html#recommendation-fully-controlled-component
 const App: React.FC<RouteComponentProps> = ({ location }) => {
+  // Initilizing App (sooo that we are able to run our mobx reactions on loading)
+  const rootStore = useContext(RootStoreContext);
+  const { setAppLoaded, token, appLoaded } = rootStore.commonStore;
+  const { getUser } = rootStore.userStore;
+
+  // useEffect to check to see.
+  // - do we have token? - get user from API
+  // - do not have token? - set app as loaded only
+  useEffect(() => {
+    if (token) {
+      getUser().finally(() => {
+        setAppLoaded();
+      });
+    } else {
+      setAppLoaded();
+    }
+  }, [token, getUser, setAppLoaded]);
+
+  if (!appLoaded) return <LoadingComponent content={"Loading App"} />;
+
   return (
     <>
       <ToastContainer position="bottom-right" />
@@ -44,7 +66,7 @@ const App: React.FC<RouteComponentProps> = ({ location }) => {
                   path={["/createActivity", "/manage/:id"]} // allow for reusable paths for ActivityForm component
                   component={ActivityForm}
                 />
-                <Route path="/login" component={LoginForm}/>
+                <Route path="/login" component={LoginForm} />
                 <Route component={NotFound} />
               </Switch>
             </Container>
