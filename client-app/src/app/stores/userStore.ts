@@ -24,11 +24,18 @@ export default class UserStore {
       runInAction("user has logged in & stored to user observer", () => {
         this.user = user;
       });
+      this.rootStore.commonStore.setToken(user.token); // save token to local browser storage
       history.push("/activities"); // redirect user on success
     } catch (error) {
       console.log("error found", error);
       // we will throw the error & catch this inside out login form
       throw error;
     }
+  };
+
+  @action logout = () => {
+    this.rootStore.commonStore.setToken(null);
+    this.user = null;
+    history.push('/');
   };
 }

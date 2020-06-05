@@ -1,6 +1,6 @@
 // we will define api calls here.
 
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosResponse, AxiosRequestConfig } from "axios";
 import {IActivity} from "../models/activity";
 import { history } from "../.."; // auto maps to index.* named files
 import { toast } from "react-toastify";
@@ -8,6 +8,18 @@ import { IUser, IUserFormValues } from "../models/User";
 
 // all api request will use this base
 axios.defaults.baseURL = "http://localhost:5000/api";
+
+// Handle requests
+// - Assign jwt token to request header as Bearer token.
+// - else we throw error if token does not exist.
+axios.interceptors.request.use((config: AxiosRequestConfig) => {
+  const token = window.localStorage.getItem('jwt');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+}, error => {
+  return Promise.reject(error);  // handle errors as a promise.
+})
+
 
 // Exception Handling Logic
 // - Add interceptor
