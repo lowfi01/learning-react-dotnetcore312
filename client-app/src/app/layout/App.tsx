@@ -21,6 +21,7 @@ import NotFound from "./NotFound";
 import LoginForm from "../../features/User/LoginForm";
 import { RootStoreContext } from "../stores/rootStore";
 import LoadingComponent from "./LoadingComponent";
+import ModalContainer from "../common/modals/ModalContainer";
 
 // us withRouter HOC to give access to all of the react-router-dom proms & location.
 // - location will give us access to key.
@@ -37,19 +38,22 @@ const App: React.FC<RouteComponentProps> = ({ location }) => {
   // - do we have token? - get user from API
   // - do not have token? - set app as loaded only
   useEffect(() => {
+    // check to see if token has been stored to windows.localStorage
     if (token) {
       getUser().finally(() => {
-        setAppLoaded();
+        setAppLoaded(); // set loaded to remove loading screen
       });
     } else {
-      setAppLoaded();
+      setAppLoaded(); // set loaded to remove loading screen
     }
   }, [token, getUser, setAppLoaded]);
 
+  // Show loading screen if setAppLoaded has not been lunched
   if (!appLoaded) return <LoadingComponent content={"Loading App"} />;
 
   return (
     <>
+      <ModalContainer />
       <ToastContainer position="bottom-right" />
       <Route exact path="/" component={HomePage} />
       <Route
