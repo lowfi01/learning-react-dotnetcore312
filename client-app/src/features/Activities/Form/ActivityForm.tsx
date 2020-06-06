@@ -1,15 +1,19 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Segment, Form, Button, GridColumn, Grid, FormGroup } from "semantic-ui-react";
+import {
+  Segment,
+  Form,
+  Button,
+  GridColumn,
+  Grid,
+  FormGroup,
+} from "semantic-ui-react";
 import { observer } from "mobx-react-lite";
 import { RouteComponentProps } from "react-router-dom";
 import { Form as FinalForm, Field } from "react-final-form";
 import { v4 as uuid } from "uuid";
 
-// State management tool
-import ActivityStore from "../../../app/stores/activityStore";
-
 // Models
-import {ActivityFormValues} from "../../../app/models/activity";
+import { ActivityFormValues } from "../../../app/models/activity";
 
 // Components
 import TextInput from "../../../app/common/form/TextInput";
@@ -20,25 +24,31 @@ import DateInput from "../../../app/common/form/DateInput";
 // utils
 import { category } from "../../../app/common/options/categoryOptions";
 import { combineDateAndTime } from "../../../app/common/util/util";
-import { combineValidators, isRequired, composeValidators, hasLengthGreaterThan } from 'revalidate';
+import {
+  combineValidators,
+  isRequired,
+  composeValidators,
+  hasLengthGreaterThan,
+} from "revalidate";
 import { RootStoreContext } from "../../../app/stores/rootStore";
 
 // validation object
 // - will do the validation for our form fields
 // - passed to final form
 const validate = combineValidators({
-  title: isRequired({message: "The event title is required"}),
-  category: isRequired('Category'),
+  title: isRequired({ message: "The event title is required" }),
+  category: isRequired("Category"),
   description: composeValidators(
-    isRequired('Description'),
-    hasLengthGreaterThan(4)({message: "Description needs to be at least 5 characters"}),
+    isRequired("Description"),
+    hasLengthGreaterThan(4)({
+      message: "Description needs to be at least 5 characters",
+    })
   )(),
-  city: isRequired('City'),
-  venue: isRequired('Venue'),
-  date: isRequired('Date'),
-  time: isRequired('Time')
-})
-
+  city: isRequired("City"),
+  venue: isRequired("Venue"),
+  date: isRequired("Date"),
+  time: isRequired("Time"),
+});
 
 interface DetailParams {
   id: string;
@@ -49,7 +59,7 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
   history,
 }) => {
   const { activityStore } = useContext(RootStoreContext); // access activity store via root
-  const {loadActivity, loadingInitial, createActivity, editActivity } = activityStore;
+  const { loadActivity, createActivity, editActivity } = activityStore;
 
   // State - Activity {}
   // - 1. the first generation of this was that we would recieve a IActivity object as prop & then populate
@@ -70,21 +80,17 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
 
   useEffect(() => {
     if (match.params.id) {
-        setLoading(true); // loading screen while we fetch activity
-        // - loadActivity, will return activity object {}
-        //   - which then sets the activity, with the returned object from ActivityFormValues();
-        loadActivity(match.params.id)
-          .then((activityData) => {
-            setActivity(new ActivityFormValues(activityData))
-          })
-          .finally(() => setLoading(false)); // disable loading once activity has been saved to state
+      setLoading(true); // loading screen while we fetch activity
+      // - loadActivity, will return activity object {}
+      //   - which then sets the activity, with the returned object from ActivityFormValues();
+      loadActivity(match.params.id)
+        .then((activityData) => {
+          setActivity(new ActivityFormValues(activityData));
+        })
+        .finally(() => setLoading(false)); // disable loading once activity has been saved to state
     }
     setLoading(false);
-  }, [
-    match.params.id,
-    loadActivity
-  ]);
-
+  }, [match.params.id, loadActivity]);
 
   const handleFinalFormSubmit = (values: any) => {
     // Combine Date & time objects to a single Date object
@@ -92,25 +98,24 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
 
     // Spread operator to create variable that has omitted (removed) fields
     // - ...activity, will have an object that does not contain, date or time properties/fields
-    const {date, time, ...activity} = values;
-    activity.date = dateTimeObject;  // create new date field & assign it to combined date time object
+    const { date, time, ...activity } = values;
+    activity.date = dateTimeObject; // create new date field & assign it to combined date time object
 
     if (!activity.id) {
       const newActivity = {
         ...activity,
         id: uuid(),
       };
-      createActivity(newActivity)
+      createActivity(newActivity);
     } else {
-      editActivity(activity)
+      editActivity(activity);
     }
   };
-
 
   return (
     <Grid>
       <GridColumn width={10}>
-        <Segment clearing >
+        <Segment clearing>
           <FinalForm
             validate={validate} // revalidator implementation
             initialValues={activity} // you must pass the inital values for final form to populate fields
@@ -137,7 +142,7 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
                   value={activity.category}
                   component={SelectInput}
                 />
-                <FormGroup widths='equal'>
+                <FormGroup widths="equal">
                   <Field
                     component={DateInput}
                     placeholder="date"

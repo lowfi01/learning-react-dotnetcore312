@@ -3,9 +3,6 @@ import React, { useContext, useEffect } from "react";
 import { Grid } from "semantic-ui-react";
 import { observer } from "mobx-react-lite";
 
-// // Stores
-import ActivityStore from "../../../app/stores/activityStore";
-
 // // Models
 // import {IActivity} from "../../../app/models/activity";
 
@@ -21,7 +18,9 @@ interface IProps {
 }
 
 const ActivityDashboard: React.FC<IProps> = () => {
-  const { activityStore: {loadActivities, loadingInitial} } = useContext(RootStoreContext); // access activity store via root
+  const {
+    activityStore: { loadActivities, loadingInitial },
+  } = useContext(RootStoreContext); // access activity store via root
 
   useEffect(() => {
     loadActivities();

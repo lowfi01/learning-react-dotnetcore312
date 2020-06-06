@@ -18,7 +18,6 @@ import HomePage from "../../features/Home/HomePage";
 import ActivityForm from "../../features/Activities/Form/ActivityForm";
 import ActivityDetail from "../../features/Activities/Details/ActivityDetail";
 import NotFound from "./NotFound";
-import LoginForm from "../../features/User/LoginForm";
 import { RootStoreContext } from "../stores/rootStore";
 import LoadingComponent from "./LoadingComponent";
 import ModalContainer from "../common/modals/ModalContainer";
@@ -70,8 +69,8 @@ const App: React.FC<RouteComponentProps> = ({ location }) => {
                   path={["/createActivity", "/manage/:id"]} // allow for reusable paths for ActivityForm component
                   component={ActivityForm}
                 />
-                <Route path="/login" component={LoginForm} />
                 <Route component={NotFound} />
+                {/* Note: Login & Register forms are conditionally rendered form the HomePage.tsx... we do not route to them as they are modals */}
               </Switch>
             </Container>
           </>

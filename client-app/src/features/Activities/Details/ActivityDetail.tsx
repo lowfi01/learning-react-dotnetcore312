@@ -3,7 +3,6 @@ import { Grid, GridColumn } from "semantic-ui-react";
 import { observer } from "mobx-react-lite";
 import { RouteComponentProps } from "react-router-dom";
 
-
 // Components
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import ActivityDetailHeader from "./ActivityDetailHeader";
@@ -11,9 +10,7 @@ import ActivityDetailInfo from "./ActivityDetailInfo";
 import ActivityDetailChat from "./ActivityDetailChat";
 import ActiivityDetailSidebar from "./ActiivityDetailSidebar";
 
-
 // Store
-import ActivityStore from "../../../app/stores/activityStore";
 import { RootStoreContext } from "../../../app/stores/rootStore";
 
 interface DetailParams {
@@ -24,7 +21,9 @@ const ActivityDetail: React.FC<RouteComponentProps<DetailParams>> = ({
   match,
   history,
 }) => {
-  const { activityStore: {loadActivity, selectedActivity, loadingInitial} } = useContext(RootStoreContext); // access activity store via root
+  const {
+    activityStore: { loadActivity, selectedActivity, loadingInitial },
+  } = useContext(RootStoreContext); // access activity store via root
 
   // NOTE - I only added this next line of code for reference.
   // const { id } = useParams<DetailParams>(); // also usable with params

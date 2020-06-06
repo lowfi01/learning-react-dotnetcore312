@@ -2,22 +2,25 @@ import React, { useContext } from "react";
 import { Item, Label } from "semantic-ui-react";
 import { observer } from "mobx-react-lite";
 
+import { format } from "date-fns";
+
 // state management
-import ActivityStore from "../../../app/stores/activityStore";
 import { RootStoreContext } from "../../../app/stores/rootStore";
 
 // models
-import {IActivity} from "../../../app/models/activity";
+import { IActivity } from "../../../app/models/activity";
 import ActivityItem from "./ActivityItem";
 
 const ActivityList: React.FC = () => {
-  const { activityStore: {activitiesByDate} } = useContext(RootStoreContext); // access activity store via root
+  const {
+    activityStore: { activitiesByDate },
+  } = useContext(RootStoreContext); // access activity store via root
   return (
     <>
-      {activitiesByDate.map(([group, activities]) => (
-        <React.Fragment key={group}>
+      {activitiesByDate.map(([groupByTime, activities]) => (
+        <React.Fragment key={groupByTime}>
           <Label size="large" color="blue">
-            {group}
+            {format(groupByTime, "eeee do MMMM")}
           </Label>
           <Item.Group divided>
             {activities.map((activity: IActivity) => {

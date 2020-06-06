@@ -1,8 +1,9 @@
 import React, { useContext } from "react";
-import { Modal, Button } from "semantic-ui-react";
+import { Modal } from "semantic-ui-react";
 import { RootStoreContext } from "../../stores/rootStore";
 import { observer } from "mobx-react-lite";
 
+// Note: This modal is being used by register & login forms.
 const ModalContainer = () => {
   const rootStore = useContext(RootStoreContext);
   const {
