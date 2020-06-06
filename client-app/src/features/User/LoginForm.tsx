@@ -6,6 +6,7 @@ import { RootStoreContext } from "../../app/stores/rootStore";
 import { IUserFormValues } from "../../app/models/User";
 import { FORM_ERROR } from "final-form";
 import { combineValidators, isRequired } from "revalidate";
+import ErrorMessage from "../../app/common/form/ErrorMessage";
 
 const validate = combineValidators({
   email: isRequired("email"),
@@ -34,7 +35,7 @@ const LoginForm = () => {
         pristine, // variable is provided by form & we can destructure here
         dirtySinceLastSubmit, // will check to see if input has been changed, allowing us to force flags to reset on input changes
       }) => (
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit} error>
           <Header
             as="h2"
             content="Login to Reactivities"
@@ -49,7 +50,10 @@ const LoginForm = () => {
             type="password"
           />
           {submitError && !dirtySinceLastSubmit && (
-            <Label color="red" basic content={submitError.statusText} />
+            <ErrorMessage
+              error={submitError}
+              text="Invalid Username or Password!"
+            />
           )}
           <Button
             loading={submitting}
@@ -58,9 +62,9 @@ const LoginForm = () => {
             content="login"
             fluid
           />
-          <pre>
-            {JSON.stringify(form.getState(), null, 2) /** Holds form values */}
-          </pre>
+          {/* <pre>
+            {JSON.stringify(form.getState(), null, 2)}
+          </pre> */}
         </Form>
       )}
     />
