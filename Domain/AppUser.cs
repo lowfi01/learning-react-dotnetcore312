@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 
 namespace Domain
@@ -13,6 +14,11 @@ namespace Domain
     // - this will popoulate our databse with all the required IdentityUser fields
     // - we add DisplayName so as to ensure we are able to add this additional field to the db :D
     public string DisplayName { get; set; }
+
+    // This defines the relationship for UserActivity
+    // - this will let entity framwork know that this is a joining table.
+    // - this also acts as a navigation point for our linq statments
+    public ICollection<UserActivity> UserActivities { get; set; }
 
   }
 }

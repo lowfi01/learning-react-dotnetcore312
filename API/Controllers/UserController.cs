@@ -41,6 +41,7 @@ namespace API.Controllers
       //   The API controller will bind the values sent from the body of the request and
       //   be used to log the user in. With the get current user we do not need to pass any
       //   parameters so we can just create a new CurrentUser.Query in this case.
+      //   - which means it's empty :D & does not need data.
     }
   }
 }
