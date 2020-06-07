@@ -1,10 +1,13 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Interfaces;
 using Domain;
 using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application.Activities
@@ -44,9 +47,11 @@ namespace Application.Activities
     public class Handler : IRequestHandler<Command>
     {
       private readonly DataContext _context;
+      private readonly IUserAccessor _userAccessor;
 
-      public Handler(DataContext context)
+      public Handler(DataContext context, IUserAccessor userAccessor)
       {
+        this._userAccessor = userAccessor; // get user from token!
         this._context = context;
       }
 
@@ -64,6 +69,28 @@ namespace Application.Activities
         };
 
         _context.Activities.Add(activity);
+
+        // Logic for associating a User to activity.
+        // - get user from database, using the jwt token id: userName.
+        // - userAccessor,  will look at the jwt token within the request header automatically
+        //   this happens via the http context.
+        // 1. get user from database, using jwt token found within IHttpContext
+        // 2. create UserActivity object to store attendee data,
+        //    mix of user & activity (join table)
+        // 3. Save Attendee to UserActivity Table
+        // 4. Save Activity to Activity Table.
+
+        var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName == _userAccessor.GetCurrentUsername());
+
+        var attendee = new UserActivity
+        {
+          Activity = activity,
+          AppUser = user,
+          DateJoined = DateTime.Now,
+          IsHost = true,
+        };
+
+        _context.UserActivity.Add(attendee);
 
         // Success & SaveChangesAsync
         // -- SaveChangesAsync, will return an int based on successful saves to database
