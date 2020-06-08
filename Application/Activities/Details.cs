@@ -27,7 +27,13 @@ namespace Application.Activities
 
       public async Task<Activity> Handle(Query request, CancellationToken cancellationToken)
       {
-        var activityInDb = await _context.Activities.FindAsync(request.Id);
+        // implemented Eager loading
+        // - We send related data with the initial query, requires, Include() & ThenInclude()
+        // - https://docs.microsoft.com/en-us/ef/core/querying/related-data
+        var activityInDb = await _context.Activities
+          .Include(x => x.UserActivities)
+            .ThenInclude(x => x.AppUser)
+          .SingleOrDefaultAsync(x => x.Id == request.Id); // Method needed to be changes as it was not compatible with Eager Loading include
 
         // throw custom exception!!
         if (activityInDb == null)

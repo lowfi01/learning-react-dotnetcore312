@@ -62,15 +62,19 @@ namespace Application.Activities
         //   throw ex;
         // }
 
-
-
         // Asynronously fetch list of activities
         // -- Dependencies
         //    --  System.Linq
         //    --  Microsoft.EntityFrameworkCore.Linq
         //    --  System.Collection.Generics
 
-        var activities = await _context.Activities.ToListAsync(cancellationToken);
+        // implemented Eager loading
+        // - We send related data with the initial query, requires, Include() & ThenInclude()
+        // - https://docs.microsoft.com/en-us/ef/core/querying/related-data
+        var activities = await _context.Activities
+          .Include(x => x.UserActivities) // Note: UserActivities is a navigation variable
+            .ThenInclude(x => x.AppUser) // return the AppUser that is nested within UserActivities
+          .ToListAsync(cancellationToken);
 
         return activities;
       }
