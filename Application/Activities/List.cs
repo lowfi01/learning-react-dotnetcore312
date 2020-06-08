@@ -7,6 +7,7 @@ using Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using AutoMapper;
 
 namespace Application.Activities
 {
@@ -18,9 +19,9 @@ namespace Application.Activities
     //  -- Mediator pattern has a Query + Handler.
     //  -- IRequest<> lives within MediatR
 
-    public class Query : IRequest<List<Activity>> { }  // returns a list of activities
+    public class Query : IRequest<List<ActivityDTO>> { }  // returns a list of activities
 
-    public class Handler : IRequestHandler<Query, List<Activity>>
+    public class Handler : IRequestHandler<Query, List<ActivityDTO>>
     {
 
       // Implement our Mediator Pattern Here
@@ -33,14 +34,16 @@ namespace Application.Activities
       // -- DBContext added is defined in API/Startup.cs
       private readonly DataContext _context;
       private readonly ILogger<List> _logger;
+      private readonly IMapper _mapper;
 
-      public Handler(DataContext context, ILogger<List> logger)
+      public Handler(DataContext context, ILogger<List> logger, IMapper mapper)
       {
+        this._mapper = mapper;
         this._logger = logger;
         this._context = context;
       }
 
-      public async Task<List<Activity>> Handle(Query request, CancellationToken cancellationToken)
+      public async Task<List<ActivityDTO>> Handle(Query request, CancellationToken cancellationToken)
       {
 
         // throw new System.Exception(); // testing agent.ts error handling & toast messages
@@ -76,7 +79,8 @@ namespace Application.Activities
             .ThenInclude(x => x.AppUser) // return the AppUser that is nested within UserActivities
           .ToListAsync(cancellationToken);
 
-        return activities;
+        // Map takes a Generic of, Object to convert & object to convert to!
+        return _mapper.Map<List<Activity>, List<ActivityDTO>>(activities);
       }
     }
   }

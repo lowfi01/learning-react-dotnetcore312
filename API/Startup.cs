@@ -2,6 +2,7 @@ using System.Text;
 using API.Middleware;
 using Application.Activities;
 using Application.Interfaces;
+using AutoMapper;
 using Domain;
 using FluentValidation.AspNetCore;
 using Infrastructure.Security;
@@ -112,6 +113,9 @@ namespace API
       //      -- the other handlers within that project passed
       services.AddMediatR(typeof(List.Handler).Assembly);
 
+      // Automapper as a service -- dependency injection
+      services.AddAutoMapper(typeof(List.Handler).Assembly); // just needs a location of the project where it can find automapping profiles
+
       // Inject IJwtGenerator * Generator class into our application.
       // - this will make avaiable out IJwtGenerator & the JwtGenerator class, which implements createtoken(AppUser user) => string;
       // Note: we inject these services, through the contructors of our classes :D  className(inject service); we
@@ -134,7 +138,6 @@ namespace API
       // NOTE: Order of methods is very important here.
       // - reference documentation for details "Migrate Startup.Configure" https://docs.microsoft.com/en-us/aspnet/core/migration/22-to-30?view=aspnetcore-3.1&tabs=visual-studio#migrate-startupconfigure
       // - UserMiddleware Error handling is first, because we want to catch errors early!!
-
 
       // Implement middleware..
       //  - Note: this needs to be at the top so as to catch exceptions early in the pipeline.

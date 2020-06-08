@@ -33,7 +33,7 @@ namespace API.Controllers
     //    -- doing this prevents the database from being overwhelmed with requests..
     //    -- as users could just spam f5 pm the request window..
     [HttpGet]
-    public async Task<ActionResult<List<Activity>>> List(CancellationToken ct)
+    public async Task<ActionResult<List<ActivityDTO>>> List(CancellationToken ct)
     {
 
       // Controller action.
@@ -51,7 +51,7 @@ namespace API.Controllers
     //    -- pass expect Guid Id within the param of the API request
     [HttpGet("{id}")]
     // [Authorize] // authrized attribute is no longer needed as we have a global policy in place to prevent access!!
-    public async Task<ActionResult<Activity>> Details(Guid id)
+    public async Task<ActionResult<ActivityDTO>> Details(Guid id)
     {
 
       // Send Mediator send request with Query message

@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Errors;
+using AutoMapper;
 using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -12,20 +13,22 @@ namespace Application.Activities
 {
   public class Details
   {
-    public class Query : IRequest<Activity>
+    public class Query : IRequest<ActivityDTO> // Fixing ReferenceLoop error, return DTO
     {
       public Guid Id { get; set; }
     }
 
-    public class Handler : IRequestHandler<Query, Activity>
+    public class Handler : IRequestHandler<Query, ActivityDTO>
     {
       private readonly DataContext _context;
-      public Handler(DataContext context)
+      private readonly IMapper _mapper;
+      public Handler(DataContext context, IMapper mapper)
       {
+        this._mapper = mapper;
         this._context = context;
       }
 
-      public async Task<Activity> Handle(Query request, CancellationToken cancellationToken)
+      public async Task<ActivityDTO> Handle(Query request, CancellationToken cancellationToken)
       {
         // implemented Eager loading
         // - We send related data with the initial query, requires, Include() & ThenInclude()
@@ -39,7 +42,10 @@ namespace Application.Activities
         if (activityInDb == null)
           throw new RestException(HttpStatusCode.NotFound, new { activity = "Not Found" });
 
-        return activityInDb;
+
+        // Implement AutoMapping - Activity to ActivityDTO
+        var activityToReturn = _mapper.Map<Activity, ActivityDTO>(activityInDb);
+        return activityToReturn;
       }
     }
   }
