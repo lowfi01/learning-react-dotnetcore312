@@ -14,10 +14,10 @@ namespace Domain
     // Note: We do need to advice, Acitivity & AppUser tables
     //       of the existance of UserActivity.. for mapping.
     public string AppUserId { get; set; }
-    public AppUser AppUser { get; set; }
+    public virtual AppUser AppUser { get; set; } // navigation props - virtual keyword is used for related data, required for lazyloading
 
     public Guid ActivityId { get; set; }
-    public Activity Activity { get; set; }
+    public virtual Activity Activity { get; set; } // navigation props - virtual keyword is used for related data, required for lazyloading
 
     public DateTime DateJoined { get; set; }
     public bool IsHost { get; set; }

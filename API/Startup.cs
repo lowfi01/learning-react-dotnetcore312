@@ -101,6 +101,7 @@ namespace API
       // -- IServiceCollection has extension method that defines dbContext
       services.AddDbContext<DataContext>(opt =>
         {
+          opt.UseLazyLoadingProxies(); // implement lazy loading
           opt.UseSqlite(Configuration.GetConnectionString("DefaultConnection")); // sqlite takes a connection string
         }
       );

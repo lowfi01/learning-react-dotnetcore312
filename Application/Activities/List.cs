@@ -71,12 +71,19 @@ namespace Application.Activities
         //    --  Microsoft.EntityFrameworkCore.Linq
         //    --  System.Collection.Generics
 
-        // implemented Eager loading
-        // - We send related data with the initial query, requires, Include() & ThenInclude()
-        // - https://docs.microsoft.com/en-us/ef/core/querying/related-data
+        // // implemented Eager loading
+        // // - We send related data with the initial query, requires, Include() & ThenInclude()
+        // // - https://docs.microsoft.com/en-us/ef/core/querying/related-data
+        // var activities = await _context.Activities
+        //   .Include(x => x.UserActivities) // Note: UserActivities is a navigation variable
+        //     .ThenInclude(x => x.AppUser) // return the AppUser that is nested within UserActivities
+        //   .ToListAsync(cancellationToken);
+
+
+        // Implementation of Lazy loading
+        // - we no longer need include() or theninclude(), as virtual keyword in related & navigation propers
+        //   within our models... UserActivity, Activity & AppUser will implement lazy loading
         var activities = await _context.Activities
-          .Include(x => x.UserActivities) // Note: UserActivities is a navigation variable
-            .ThenInclude(x => x.AppUser) // return the AppUser that is nested within UserActivities
           .ToListAsync(cancellationToken);
 
         // Map takes a Generic of, Object to convert & object to convert to!
