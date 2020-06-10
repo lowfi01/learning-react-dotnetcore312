@@ -63,6 +63,20 @@ namespace API
       identityBuilder.AddEntityFrameworkStores<DataContext>(); // register the store, which is our data context
       identityBuilder.AddSignInManager<SignInManager<AppUser>>(); // register the Sign in manager & user type
 
+      // Register our Custom Authorization Policy
+      services.AddAuthorization(opt =>
+      {
+        opt.AddPolicy("IsActivityHost", policy =>
+        {
+          policy.Requirements.Add(new IsHostRequirement());
+        });
+      });
+
+      // Definition of Transient
+      // - Adding a transient service means that each time the service is requested, a new instance is created.
+      // We are registering out IsHostRequirement as a Service to be created a new each time it is needed..
+      //  - Note: this means as we inject this method to our application a new instance will be madee..
+      services.AddTransient<IAuthorizationHandler, IsHostRequirementHandler>(); // inject our custom Authorization policy
 
       // note we should be hard coding the key, JwtGenerator.cs also has hardcoded vale
 

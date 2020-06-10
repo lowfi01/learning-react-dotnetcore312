@@ -94,6 +94,7 @@ namespace API.Controllers
 
 
     [HttpPut("{id}")]
+    [Authorize(Policy = "IsActivityHost")] // custom policy
     public async Task<ActionResult<Unit>> Edit(Guid id, Edit.Command command)
     {
       command.Id = id; // attach the id to the command object
@@ -101,7 +102,8 @@ namespace API.Controllers
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult<Unit>> Edit(Guid id)
+    [Authorize(Policy = "IsActivityHost")] // custom policy
+    public async Task<ActionResult<Unit>> Delete(Guid id) // For some weird reason this was named Edit !! fixed that
     {
       return await Mediator.Send(new Delete.Command { Id = id });  // Mediator is the protected field coming from base controller
     }
