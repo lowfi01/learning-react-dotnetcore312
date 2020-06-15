@@ -6,6 +6,9 @@ export interface IActivity {
   date: Date;
   city: string;
   venue: string;
+  isGoing: boolean;
+  isHost: boolean;
+  attendees: IAttendee[];
 }
 
 // interface for option values
@@ -23,20 +26,19 @@ export interface IActivityFormValues extends Partial<IActivity> {
 export class ActivityFormValues implements IActivityFormValues {
   // initialize class values
   id?: string = undefined;
-  title: string = "";
-  category: string = "";
-  description: string = "";
+  title = "";
+  category = "";
+  description = "";
   date?: Date = undefined;
   time?: Date = undefined;
-  city: string = "";
-  venue: string = "";
+  city = "";
+  venue = "";
 
   // constructor
-  constructor(init?: IActivityFormValues){
-
+  constructor(init?: IActivityFormValues) {
     // Date & Time objects should be the same
     // - As we have two different fields that define them seperately
-    if (init && init.date){
+    if (init && init.date) {
       init.time = init.date;
     }
 
@@ -45,6 +47,14 @@ export class ActivityFormValues implements IActivityFormValues {
     // - Object.assign(target, source) will do this for us
     //    - We can define the target class (initialized values) with this
     //    - we can define the source (who provides the data) with the argument passed
-    Object.assign(this, init)
+    Object.assign(this, init);
   }
+}
+
+// Model that defines an attendee
+export interface IAttendee {
+  username: string;
+  displayName: string;
+  image: string;
+  isHost: boolean;
 }

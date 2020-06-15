@@ -59,7 +59,12 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
   history,
 }) => {
   const { activityStore } = useContext(RootStoreContext); // access activity store via root
-  const { loadActivity, createActivity, editActivity } = activityStore;
+  const {
+    loadingInitial,
+    loadActivity,
+    createActivity,
+    editActivity,
+  } = activityStore;
 
   // State - Activity {}
   // - 1. the first generation of this was that we would recieve a IActivity object as prop & then populate
@@ -176,7 +181,7 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
                   positive
                   type="submit"
                   content="submit"
-                  disabled={loading || invalid || pristine}
+                  disabled={loadingInitial || invalid || pristine}
                 />
                 <Button
                   onClick={() => {
@@ -187,7 +192,7 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
                   floated="right"
                   type="button"
                   content="cancel"
-                  disabled={loading}
+                  disabled={loadingInitial}
                 />
               </Form>
             )}

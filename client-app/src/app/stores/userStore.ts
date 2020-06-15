@@ -20,7 +20,6 @@ export default class UserStore {
   @action login = async (loginValues: IUserFormValues) => {
     try {
       const user = await agent.User.login(loginValues);
-      console.log(user);
       runInAction("user has logged in & stored to user observer", () => {
         this.user = user;
       });

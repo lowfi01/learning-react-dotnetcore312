@@ -29,7 +29,7 @@ namespace Application.Activities
         // - we are able to add options to help with mapping or nested AttendeeDTO
         //   as we were unable to correctly map the data we needed across
         // d = destination, o = options, s = source..
-        .ForMember(d => d.UserName, o => o.MapFrom(s => s.AppUser.UserName))
+        .ForMember(d => d.Username, o => o.MapFrom(s => s.AppUser.UserName)) // Changed to Username from UserName was this was not storing correct in mobxStore - clientApp
         .ForMember(d => d.DisplayName, o => o.MapFrom(s => s.AppUser.DisplayName));
       // Note: IsHost, has matching names and can easily map :D
     }

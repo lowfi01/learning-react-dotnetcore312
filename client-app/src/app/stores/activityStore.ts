@@ -4,6 +4,7 @@ import agent from "../api/agent";
 import { history } from "../..";
 import { toast } from "react-toastify";
 import { RootStore } from "./rootStore";
+import { setActivityProps, createAttendee } from "../common/util/util";
 
 // State management
 export default class ActivityStore {
@@ -24,6 +25,7 @@ export default class ActivityStore {
   @observable selectedActivity: IActivity | null = null; // undefined does not need a value assigned.
   @observable submitting = false; // loading state for our submit buttons
   @observable targetedButton = ""; // Capture current button for loading icon animation
+  @observable loading = false;
 
   // Computed property
   // - calculating values based on already existing observable data.
@@ -120,16 +122,14 @@ export default class ActivityStore {
   @action loadActivities = async () => {
     // set loading screen within App.ts to true!
     this.loadingInitial = true;
-
     // fetch list of activities from activities api using agent
-
     try {
       const activitivies = await agent.Activities.list();
       // - add action wrapper so promises still scope to actions
       //   and work with strict mode.
       runInAction("loading activities populating", () => {
         activitivies.forEach((activity) => {
-          activity.date = new Date(activity.date);
+          setActivityProps(activity, this.rootStore.userStore.user!); // this will modify the activity variable :D so we won't need to say const newActivity
           this.activityRegistry.set(activity.id, activity);
         });
       });
@@ -154,7 +154,7 @@ export default class ActivityStore {
       try {
         activity = await agent.Activities.details(id);
         runInAction("getting activity", () => {
-          activity.date = new Date(activity.date);
+          setActivityProps(activity, this.rootStore.userStore.user!); // this will modify the activity variable :D so we won't need to say const newActivity
           this.selectedActivity = activity;
           this.activityRegistry.set(activity.id, activity);
           this.loadingInitial = false;
@@ -211,6 +211,14 @@ export default class ActivityStore {
     this.submitting = true; // handles loading icon for buttons
     try {
       await agent.Activities.create(activity); // server only returns {} on success
+      // Note: as we would like to represent this data live, we will just create the shape of the data
+      //       saveed to the database & store it into our activityRegistry :D
+      const attendee = createAttendee(this.rootStore.userStore.user!);
+      attendee.isHost = true;
+      const attendees = [];
+      attendees.push(attendee);
+      activity.attendees = attendees;
+      activity.isHost = true;
       runInAction("creating activity", () => {
         this.activityRegistry.set(activity.id, activity);
         this.selectedActivity = activity;
@@ -284,5 +292,66 @@ export default class ActivityStore {
 
   @action clearActivity = () => {
     this.selectedActivity = null;
+  };
+
+  @action attendActivity = async () => {
+    // Note: We can assume user must be logged in to reach the join attendee button :D
+    const attendee = createAttendee(this.rootStore.userStore.user!);
+    this.loading = true;
+    // make changes to API
+    try {
+      await agent.Activities.attend(this.selectedActivity!.id);
+      runInAction(
+        "User has been successfully added to activity as attendee",
+        () => {
+          // Note: We can assume that the activity is not null.. as they are viewing the activity detail when clicking attendee!
+          if (this.selectedActivity != null) {
+            // Note: acitivity will have a list of attendees
+            this.selectedActivity.attendees.push(attendee);
+            this.selectedActivity.isGoing = true;
+            // save changes to our activity dictionary (map!)
+            this.activityRegistry.set(
+              this.selectedActivity.id,
+              this.selectedActivity
+            );
+          }
+          this.loading = false;
+        }
+      );
+    } catch (error) {
+      runInAction(
+        "Problem signing up to activity",
+        () => (this.loading = false)
+      );
+      toast.error("Problem signing up to activity");
+      console.log(error);
+    }
+  };
+
+  @action cancelAttendance = async () => {
+    this.loading = true;
+    try {
+      await agent.Activities.unattend(this.selectedActivity!.id);
+      runInAction("Successfully unattended activity", () => {
+        if (this.selectedActivity != null) {
+          this.selectedActivity.attendees = this.selectedActivity.attendees.filter(
+            (attendee) =>
+              // false will be removed from array
+              attendee.username !== this.rootStore.userStore.user!.username
+          );
+          this.selectedActivity.isGoing = false;
+          // save changes to our activity dictionary (map!)
+          this.activityRegistry.set(
+            this.selectedActivity.id,
+            this.selectedActivity
+          );
+        }
+        this.loading = false;
+      });
+    } catch (error) {
+      runInAction("Problem unattending activity", () => (this.loading = false));
+      toast.error("Problem unattending activity");
+      console.log(error);
+    }
   };
 }

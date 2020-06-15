@@ -10,7 +10,7 @@ namespace Application.Activities
   // - "errors": "A possible object cycle was detected which is not supported. This can either be due to a cycle or if the object depth is larger than the maximum allowed depth of 32."
   public class AttendeeDTO
   {
-    public string UserName { get; set; }
+    public string Username { get; set; } // Changed to Username from UserName was this was not storing correct in mobxStore - clientApp
     public string DisplayName { get; set; }
     public string Image { get; set; }
     public bool IsHost { get; set; }
