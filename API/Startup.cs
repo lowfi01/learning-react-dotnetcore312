@@ -5,6 +5,7 @@ using Application.Interfaces;
 using AutoMapper;
 using Domain;
 using FluentValidation.AspNetCore;
+using Infrastructure.Photos;
 using Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -144,6 +145,20 @@ namespace API
       //   - this uses the HTTP context to check the user object & check list of claims... to find the username within our token.
       // - Note: we should now be able to call IUserAccessor to access UserAccessor methods... thus hiding implementation.
       services.AddScoped<IUserAccessor, UserAccessor>();
+
+
+      // Add configuration service
+      // - we are looking to add out CloudinarySettings as a Configuration option
+      //   - Configuration, will register a service & bind using a given an object with property fields... <Types>(values)
+      services.Configure<CloudinarySettings>(
+          // We will pass our secret key
+          // - dotnet user-secrets list (to show all secret keys stores on our machine)
+          // - output of user-secrets, we are mapping :D
+          //    - Cloudinary:CloudName = lowfi01
+          //    - Cloudinary:ApiSecret = 6ZQGuVuqQKuH6gtF54ziVFn4T0w
+          //    - Cloudinary:ApiKey = 263189922523254
+          Configuration.GetSection("Cloudinary")
+        );
 
     }
 
