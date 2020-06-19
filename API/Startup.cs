@@ -146,6 +146,9 @@ namespace API
       // - Note: we should now be able to call IUserAccessor to access UserAccessor methods... thus hiding implementation.
       services.AddScoped<IUserAccessor, UserAccessor>();
 
+      // Inject Photo upload & Delete service, Cloudinary (Dependency injection)
+      // - Allows access to AddPhoto & DeletePhoto methods throughout our project
+      services.AddScoped<IPhotoAccessor, PhotoAccessor>();
 
       // Add configuration service
       // - we are looking to add out CloudinarySettings as a Configuration option
