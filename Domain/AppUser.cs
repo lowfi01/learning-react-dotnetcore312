@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
+
 
 namespace Domain
 {
@@ -20,5 +22,11 @@ namespace Domain
     // - this also acts as a navigation point for our linq statments
     public virtual ICollection<UserActivity> UserActivities { get; set; }  // virtual keyword is used for related data, required for lazyloading
 
+    // Implement entity realtionship between users and photos
+    // - lazy loading using virtual
+    // - allow list using ICollection
+    public virtual ICollection<Photo> Photos { get; set; }
+
+    public string Bio { get; set; }
   }
 }

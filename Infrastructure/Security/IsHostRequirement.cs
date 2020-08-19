@@ -19,7 +19,6 @@ namespace Infrastructure.Security
     // This is the requirement we pass as an attribute
   }
 
-
   public class IsHostRequirementHandler : AuthorizationHandler<IsHostRequirement>
   {
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -33,7 +32,6 @@ namespace Infrastructure.Security
       this._httpContextAccessor = httpContextAccessor;
       this._context = context;
     }
-
 
     protected override Task HandleRequirementAsync(
           AuthorizationHandlerContext context,
@@ -66,13 +64,12 @@ namespace Infrastructure.Security
                               .RouteValues // Route values are returned as a dictionary type so we can map using SingleOrDefault linq
                               .SingleOrDefault(x => x.Key == "id").Value // match only for the param we define in the [HttpPost("id")]
                               .ToString() // convert type to string as that is what Guid.Parse expects
-                              );
+                      );
 
       var activity = _context.Activities.FindAsync(activityId).Result; // abstract result from FindAync
 
       // look for this activity in UserActivity table
       UserActivity host = activity.UserActivities.FirstOrDefault(x => x.IsHost == true); // Note: we can just check for IsHost, bt
-
 
       //  Remember we can interigate our host as it contains an AppUser which contains our userName
       //  - check if Username is == to current Username
@@ -82,9 +79,7 @@ namespace Infrastructure.Security
       }
 
       return Task.CompletedTask; // Note: if it fails you will get a 403 forbidden
-
     }
-
 
     // Student alternative code
     // protected override async Task HandleRequirementAsync(

@@ -11,8 +11,6 @@ namespace Infrastructure
     // We will create an Interface, so that we can use dependency inject from Api down to Application
     // of our Interface class, so that Application (business logic) is able to use the Interface classes
     // to generate tokens
-
-
   }
 }
 

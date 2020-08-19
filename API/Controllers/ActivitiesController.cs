@@ -91,8 +91,6 @@ namespace API.Controllers
       return await Mediator.Send(new Unattend.Command { Id = id });
     }
 
-
-
     [HttpPut("{id}")]
     [Authorize(Policy = "IsActivityHost")] // custom policy
     public async Task<ActionResult<Unit>> Edit(Guid id, Edit.Command command)

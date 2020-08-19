@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
+using Application.Errors;
+using System.Net;
 
 namespace Application.Activities
 {
@@ -87,7 +89,9 @@ namespace Application.Activities
           .ToListAsync(cancellationToken);
 
         // Map takes a Generic of, Object to convert & object to convert to!
-        return _mapper.Map<List<Activity>, List<ActivityDTO>>(activities);
+
+        throw new RestException(HttpStatusCode.NoContent, new { Activity = "HELLO WORLD!!" });
+        // return _mapper.Map<List<Activity>, List<ActivityDTO>>(activities);
       }
     }
   }

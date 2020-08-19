@@ -42,7 +42,7 @@ namespace Application.Activities
         //    - should add, edit, delete from database context
         //    - _context.ContextObject.Add(activity); // example
 
-        var activtyInDb = await _context.Activities.FindAsync(request.Id);
+        var activtyInDb = await _context.Activities.FindAsync("^");
         if (activtyInDb == null)
           throw new RestException(HttpStatusCode.NotFound, new { Activity = "Attendee cannot join an activity that does not exist!" });
 
@@ -75,7 +75,6 @@ namespace Application.Activities
 
         // Lets attempt to save it to database
         _context.UserActivity.Add(attendence);
-
 
         // Lets execute ACID process and await the result
         var success = await _context.SaveChangesAsync() > 0;
