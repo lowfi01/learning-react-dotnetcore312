@@ -8,17 +8,14 @@ using Microsoft.Extensions.Options;
 // # - using Cloudinary dotnet action nuget package
 // - Cloudinary provides us with a package that makes using images easier..
 //   - also contains options for  php, nodejs etc.... look at website for further information
-
-
 namespace Infrastructure.Photos
 {
   public class PhotoAccessor : IPhotoAccessor
   {
     private readonly Cloudinary _cloudinary; // should hold cloundinary methods
 
-    // Note: we have added this as options in startup  services.Configure<CloudinarySettings>
+    // Note: we have used option to gain access to our startup.cs services.Configure<CloudinarySettings>
     //       - This maps to our user secrets which are strongly typed :) "look at services.configure commments"
-
     public PhotoAccessor(IOptions<CloudinarySettings> config)
     {
       // cloudinary Account is provided by cloudinary package
@@ -51,7 +48,7 @@ namespace Infrastructure.Photos
         }
       };
 
-      // lets turn the finished result in custom object we created :)
+      // lets turn the finished result into a custom object we created :)
       return new PhotoUploadResult
       {
         PublicId = uploadResults.PublicId,
