@@ -1,3 +1,4 @@
+using System;
 using Application.Interfaces;
 using Application.Photos;
 using CloudinaryDotNet;
@@ -47,6 +48,9 @@ namespace Infrastructure.Photos
           uploadResults = _cloudinary.Upload(uploadParams); // Should pass to cloudinary
         }
       };
+
+      // Add error handling for _cloudinary
+      if (uploadResults.Error != null) throw new Exception(uploadResults.Error.Message);
 
       // lets turn the finished result into a custom object we created :)
       return new PhotoUploadResult
