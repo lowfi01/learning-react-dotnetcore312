@@ -19,7 +19,7 @@ namespace Persistence
     // Configure our many to many relationship between - Activity, AppUser & userActivity (join)
     public DbSet<UserActivity> UserActivity { get; set; }
 
-    public DbSet<Photo> Photos { get; set; }
+    public DbSet<Photo> Photo { get; set; }
 
     // Generate Seed Data
     // - Overrides method from DbContext

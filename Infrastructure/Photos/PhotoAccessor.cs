@@ -43,7 +43,9 @@ namespace Infrastructure.Photos
           var uploadParams = new ImageUploadParams
           {
             // tell cloudinary which files we are passing
-            File = new FileDescription(file.FileName, stream)
+            File = new FileDescription(file.FileName, stream),
+            // Tranform our images (rescale, crop etc..) Note: we are using the client side to crop images so i'll comment this out for now.
+            // Transformation = new Transformation().Height(500).Width(500).Crop("fill").Gravity("face"),
           };
           uploadResults = _cloudinary.Upload(uploadParams); // Should pass to cloudinary
         }
