@@ -53,6 +53,13 @@ namespace Persistence
                 .HasOne(u => u.Activity)
                 .WithMany(a => a.UserActivities)
                 .HasForeignKey(u => u.ActivityId);
+
+      // This is required to delete photos correctly from database as without it
+      // we will have a stored photo with a null AppUser Id
+      builder.Entity<AppUser>()
+                .HasMany(p => p.Photos)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
     }
 
   }
