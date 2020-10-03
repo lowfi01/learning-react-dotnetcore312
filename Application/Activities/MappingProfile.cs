@@ -1,3 +1,4 @@
+using System.Linq;
 using AutoMapper;
 using Domain;
 
@@ -30,7 +31,8 @@ namespace Application.Activities
         //   as we were unable to correctly map the data we needed across
         //   d = destination, o = options, s = source..
         .ForMember(d => d.Username, o => o.MapFrom(s => s.AppUser.UserName)) // Changed to Username from UserName was this was not storing correct in mobxStore - clientApp
-        .ForMember(d => d.DisplayName, o => o.MapFrom(s => s.AppUser.DisplayName));
+        .ForMember(d => d.DisplayName, o => o.MapFrom(s => s.AppUser.DisplayName))
+        .ForMember(d => d.Image, o => o.MapFrom(s => s.AppUser.Photos.FirstOrDefault(x => x.IsMain).Url));
       // Note: IsHost, has matching names and can easily map :D
     }
   }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -79,10 +80,9 @@ namespace Application.User
             DisplayName = user.DisplayName,
             Token = jwtToken, // we can technicall just pass _jwtGenerator.CreateToken(user), but i wanted to add notes
             Username = user.UserName,
-            Image = null,
+            Image = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
           };
         }
-
 
         throw new RestException(HttpStatusCode.Unauthorized);
       }

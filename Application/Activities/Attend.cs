@@ -42,7 +42,7 @@ namespace Application.Activities
         //    - should add, edit, delete from database context
         //    - _context.ContextObject.Add(activity); // example
 
-        var activtyInDb = await _context.Activities.FindAsync("^");
+        var activtyInDb = await _context.Activities.FindAsync(request.Id);
         if (activtyInDb == null)
           throw new RestException(HttpStatusCode.NotFound, new { Activity = "Attendee cannot join an activity that does not exist!" });
 

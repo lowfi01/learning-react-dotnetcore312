@@ -100,7 +100,7 @@ namespace Application.User
             DisplayName = user.DisplayName,
             Token = _jwtGenerator.CreateToken(user),
             Username = user.UserName,
-            Image = null
+            Image = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,  // kind of pointless as we cannot register & add photos at the same time... but it's a nice thing to have for consistency
           };
         }
 

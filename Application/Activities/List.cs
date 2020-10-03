@@ -89,9 +89,7 @@ namespace Application.Activities
           .ToListAsync(cancellationToken);
 
         // Map takes a Generic of, Object to convert & object to convert to!
-
-        throw new RestException(HttpStatusCode.NoContent, new { Activity = "HELLO WORLD!!" });
-        // return _mapper.Map<List<Activity>, List<ActivityDTO>>(activities);
+        return _mapper.Map<List<Activity>, List<ActivityDTO>>(activities);
       }
     }
   }
