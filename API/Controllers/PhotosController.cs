@@ -18,10 +18,16 @@ namespace API.Controllers
       return await Mediator.Send(command);
     }
 
-    [HttpDelete("{id}")]
-    public async Task<ActionResult<Unit>> Delete(string id)
+    [HttpDelete("{photoId}")]
+    public async Task<ActionResult<Unit>> Delete(string photoId)
     {
-      return await Mediator.Send(new Delete.Command { Id = id });
+      return await Mediator.Send(new Delete.Command { Id = photoId });
+    }
+
+    [HttpPost("{photoId}/setmain")]
+    public async Task<ActionResult<Unit>> SetMain(string photoId)
+    {
+      return await Mediator.Send(new SetMain.Command { Id = photoId });
     }
   }
 }
