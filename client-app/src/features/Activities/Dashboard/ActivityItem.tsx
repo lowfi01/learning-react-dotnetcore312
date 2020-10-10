@@ -30,10 +30,15 @@ const ActivityItem: React.FC<IProps> = ({ activity }) => {
       <Segment>
         <Item.Group>
           <Item key={id}>
-            <Item.Image size="tiny" circular src={host.image || "/assets/user.png"} />
+            <Item.Image
+              size="tiny"
+              circular src={host.image || "/assets/user.png"}
+              style={{minWidth: '13%'}}/>
             <Item.Content>
               <Item.Header as={Link} to={`/activities/${activity.id}`}>{title}</Item.Header>
-              <Item.Description>Hosted by {host.displayName}</Item.Description>
+              <Item.Description>
+                Hosted by  <Link to={`/profile/${host.username}`}>{host.displayName}</Link>
+              </Item.Description>
               {isHost && (
                 <Item.Description>
                   <Label
