@@ -21,6 +21,7 @@ import NotFound from "./NotFound";
 import { RootStoreContext } from "../stores/rootStore";
 import LoadingComponent from "./LoadingComponent";
 import ModalContainer from "../common/modals/ModalContainer";
+import ProfilePage from "../../features/Profile/ProfilePage";
 
 // us withRouter HOC to give access to all of the react-router-dom proms & location.
 // - location will give us access to key.
@@ -69,6 +70,7 @@ const App: React.FC<RouteComponentProps> = ({ location }) => {
                   path={["/createActivity", "/manage/:id"]} // allow for reusable paths for ActivityForm component
                   component={ActivityForm}
                 />
+                <Route path="/profile/:username" component={ProfilePage}/>
                 <Route component={NotFound} />
                 {/* Note: Login & Register forms are conditionally rendered form the HomePage.tsx... we do not route to them as they are modals */}
               </Switch>
