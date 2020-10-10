@@ -22,6 +22,7 @@ const activityImageTextStyle = {
 const ActivityDetailHeader: React.FC<{ activity: IActivity }> = ({
   activity,
 }) => {
+  const host = activity.attendees.filter(x => x.isHost)[0];
   const rootStore = useContext(RootStoreContext);
   const {
     activityStore: { attendActivity, cancelAttendance, loading },
@@ -45,7 +46,11 @@ const ActivityDetailHeader: React.FC<{ activity: IActivity }> = ({
                 />
                 <p>{format(activity.date, "eeee do MMM")}</p>
                 <p>
-                  Hosted by <strong>Bob</strong>
+                  Hosted by
+                  {' '}
+                  <Link to={`/profile/${host.displayName}`}>
+                    <strong>{host.displayName}</strong>
+                  </Link>
                 </p>
               </Item.Content>
             </Item>
