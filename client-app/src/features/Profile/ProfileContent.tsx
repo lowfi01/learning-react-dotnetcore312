@@ -16,7 +16,7 @@ const ProfileContent = () => {
       menu={{fluid: true, vertical: true}}
       menuPosition='right'
       panes={panes}
-      activeIndex={2}
+      activeIndex={2} // remove me once done!!
     />
   )
 }
