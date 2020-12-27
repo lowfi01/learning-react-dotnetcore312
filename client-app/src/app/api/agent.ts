@@ -5,6 +5,7 @@ import { IActivity } from "../models/activity";
 import { history } from "../.."; // auto maps to index.* named files
 import { toast } from "react-toastify";
 import { IUser, IUserFormValues } from "../models/User";
+import { IProfile } from "../models/profile";
 
 // all api request will use this base
 axios.defaults.baseURL = "http://localhost:5000/api";
@@ -118,7 +119,12 @@ const User = {
     requests.post("/user/register", userRegister),
 };
 
+const Profiles = {
+  get: (username: string): Promise<IProfile> => requests.get(`/profiles/${username}`)
+}
+
 export default {
   Activities,
   User,
+  Profiles
 };

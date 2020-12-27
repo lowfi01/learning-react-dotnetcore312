@@ -4,6 +4,7 @@ import { createContext } from "react";
 import { configure } from "mobx";
 import CommonStore from "./commonStore";
 import ModalStore from "./modalStore";
+import ProfileStore from "./profileStore";
 
 // Mobx configuration
 // - enable strict mode
@@ -18,6 +19,7 @@ export class RootStore {
   userStore: UserStore;
   commonStore: CommonStore;
   modalStore: ModalStore;
+  profileStore: ProfileStore;
 
   constructor() {
     // Passing the rootStore context (this) allow easy navigation between stores.
@@ -30,6 +32,7 @@ export class RootStore {
     this.userStore = new UserStore(this);
     this.commonStore = new CommonStore(this);
     this.modalStore = new ModalStore(this);
+    this.profileStore = new ProfileStore(this);
   }
 }
 

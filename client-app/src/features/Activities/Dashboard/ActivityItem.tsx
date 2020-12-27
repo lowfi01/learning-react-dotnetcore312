@@ -33,7 +33,7 @@ const ActivityItem: React.FC<IProps> = ({ activity }) => {
             <Item.Image
               size="tiny"
               circular src={host.image || "/assets/user.png"}
-              style={{minWidth: '13%'}}/>
+              style={{minWidth: '15%', minHeight: '80px'}}/>
             <Item.Content>
               <Item.Header as={Link} to={`/activities/${activity.id}`}>{title}</Item.Header>
               <Item.Description>
