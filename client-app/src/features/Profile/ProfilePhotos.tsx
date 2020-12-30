@@ -44,7 +44,7 @@ function ProfilePhotos() {
               {profile && profile.photo.map(p => (
                   <Card key={p.id}>
                     <Image src={p.url}/>
-                    { isCurrentUser && !p.isMain ? (
+                    { isCurrentUser && (
                         <Button.Group fluid widths={2}>
                           <Button
                             name={p.id}
@@ -55,11 +55,10 @@ function ProfilePhotos() {
                               setTarget(e.currentTarget.name);
                               setMainPhoto(p)
                             }}
-                            loading={loading && target === p.id}/>
+                            loading={loading && target === p.id}
+                            disabled={p.isMain}/>
                           <Button basic negative icon='trash'/>
                         </Button.Group>
-                      ) : (
-                        <Button positive content="Current Main" disabled/>
                       )
                     }
                   </Card>
