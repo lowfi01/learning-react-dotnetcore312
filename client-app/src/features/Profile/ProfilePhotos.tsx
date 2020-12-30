@@ -11,6 +11,9 @@ function ProfilePhotos() {
   // trigger toggle for add photo mode..
   const [addPhotoMode, setAddPhotoMode] = useState(false);
 
+  // Local state to differentiate the buttons being clicked
+  const [target, setTarget] = useState<string | undefined>(undefined);
+
   // create handler to close photo when upload is succesful
   // Note: error handling is done in the store which should show a toast
   const handleUploadImage = (photo: Blob) => {
@@ -43,11 +46,20 @@ function ProfilePhotos() {
                     <Image src={p.url}/>
                     { isCurrentUser && !p.isMain ? (
                         <Button.Group fluid widths={2}>
-                          <Button basic positive content='main' onClick={() => setMainPhoto(p)} loading={loading}/>
+                          <Button
+                            name={p.id}
+                            basic
+                            positive
+                            content='main'
+                            onClick={(e) => {
+                              setTarget(e.currentTarget.name);
+                              setMainPhoto(p)
+                            }}
+                            loading={loading && target === p.id}/>
                           <Button basic negative icon='trash'/>
                         </Button.Group>
                       ) : (
-                          <Button positive content="Current Main" disabled/>
+                        <Button positive content="Current Main" disabled/>
                       )
                     }
                   </Card>
