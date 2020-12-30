@@ -11,6 +11,13 @@ function ProfilePhotos() {
   // trigger toggle for add photo mode..
   const [addPhotoMode, setAddPhotoMode] = useState(false);
 
+  // create handler to close photo when upload is succesful
+  // Note: error handling is done in the store which should show a toast
+  const handleUploadImage = (photo: Blob) => {
+    uploadPhoto(photo)
+      .then(x => setAddPhotoMode(false));
+  }
+
   return (
     <Tab.Pane>
       <Grid>
@@ -28,7 +35,7 @@ function ProfilePhotos() {
           { addPhotoMode ? (
             <PhotoUploadWidget
               loading={uploadingPhoto}
-              uploadPhoto={uploadPhoto} />
+              uploadPhoto={handleUploadImage} />
           ): (
             <Card.Group itemsPerRow={5}>
               {profile && profile?.photo.map(p => (

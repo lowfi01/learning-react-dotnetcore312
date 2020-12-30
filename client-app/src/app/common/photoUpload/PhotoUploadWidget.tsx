@@ -6,7 +6,7 @@ import PhotoWidgetCropper from './PhotoWidgetCropper';
 
 interface IProps {
   loading: boolean,
-  uploadPhoto: (file: Blob) => Promise<void>,
+  uploadPhoto: (file: Blob) => void,
 }
 
 const PhotoUploadWidget: React.FC<IProps> = ({loading, uploadPhoto}) => {
