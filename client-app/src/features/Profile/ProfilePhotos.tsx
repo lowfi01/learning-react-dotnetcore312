@@ -6,7 +6,7 @@ import { RootStoreContext } from '../../app/stores/rootStore';
 
 function ProfilePhotos() {
   const rootStore = useContext(RootStoreContext);
-  const { profile, isCurrentUser } = rootStore.profileStore;
+  const { profile, isCurrentUser, uploadingPhoto, uploadPhoto } = rootStore.profileStore;
 
   // trigger toggle for add photo mode..
   const [addPhotoMode, setAddPhotoMode] = useState(false);
@@ -26,7 +26,9 @@ function ProfilePhotos() {
         </Grid.Column>
         <Grid.Column width={16}>
           { addPhotoMode ? (
-            <PhotoUploadWidget />
+            <PhotoUploadWidget
+              loading={uploadingPhoto}
+              uploadPhoto={uploadPhoto} />
           ): (
             <Card.Group itemsPerRow={5}>
               {profile && profile?.photo.map(p => (

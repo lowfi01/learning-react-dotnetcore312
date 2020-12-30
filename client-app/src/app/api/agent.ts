@@ -6,7 +6,6 @@ import { history } from "../.."; // auto maps to index.* named files
 import { toast } from "react-toastify";
 import { IUser, IUserFormValues } from "../models/User";
 import { IPhoto, IProfile } from "../models/profile";
-import { request } from "http";
 
 // all api request will use this base
 axios.defaults.baseURL = "http://localhost:5000/api";

@@ -45,7 +45,7 @@ export default class ProfileStore {
     }
   }
 
-  @action UploadPhoto = async (file: Blob) => {
+  @action uploadPhoto = async (file: Blob) => {
     this.uploadingPhoto = true; //loading icon
 
     try {
@@ -57,8 +57,8 @@ export default class ProfileStore {
 
         if (this.profile && photo.isMain && this.rootStore.userStore.user) { // Add check to prevent typescript from being grumpy at possible null value
           // Update Users profile image if this is a main photo.
-          this.rootStore.userStore.user.image == photo.url;
-          this.profile.image == photo.url;
+          this.rootStore.userStore.user.image = photo.url;
+          this.profile.image = photo.url;
         }
         this.uploadingPhoto = false;
       })
