@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Application.Comments;
 
 namespace Application.Activities
 {
@@ -24,6 +25,8 @@ namespace Application.Activities
 
     [JsonPropertyName("attendees")] // will return to the client UserActivity as attendees, as AutoMapper needs UserActivity to match names (convention based)
     public ICollection<AttendeeDTO> UserActivities { get; set; }
+
+    public ICollection<CommentDto> Comments { get; set; }
 
   }
 }
