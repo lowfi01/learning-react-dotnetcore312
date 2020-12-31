@@ -6,13 +6,14 @@ import { RootStoreContext } from '../../app/stores/rootStore';
 
 function ProfilePhotos() {
   const rootStore = useContext(RootStoreContext);
-  const { profile, isCurrentUser, uploadingPhoto, uploadPhoto, setMainPhoto, loading } = rootStore.profileStore;
+  const { profile, isCurrentUser, uploadingPhoto, uploadPhoto, setMainPhoto, loading, deletePhoto } = rootStore.profileStore;
 
   // trigger toggle for add photo mode..
   const [addPhotoMode, setAddPhotoMode] = useState(false);
 
   // Local state to differentiate the buttons being clicked
   const [target, setTarget] = useState<string | undefined>(undefined);
+  const [delTarget, setDelTarget] = useState<string | undefined>(undefined);
 
   // create handler to close photo when upload is succesful
   // Note: error handling is done in the store which should show a toast
@@ -57,7 +58,18 @@ function ProfilePhotos() {
                             }}
                             loading={loading && target === p.id}
                             disabled={p.isMain}/>
-                          <Button basic negative icon='trash'/>
+                          <Button
+                            name={p.id}
+                            basic
+                            negative
+                            icon='trash'
+                            onClick={e => {
+                              setDelTarget(e.currentTarget.name);
+                              deletePhoto(p);
+                            }}
+                            loading={loading && delTarget === p.id}
+                            disabled={p.isMain}
+                            />
                         </Button.Group>
                       )
                     }
