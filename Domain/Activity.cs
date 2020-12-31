@@ -21,5 +21,7 @@ namespace Domain
     // - this will let entity framwork know that this is a joining table.
     // - this also acts as a navigation point for our linq statments
     public virtual ICollection<UserActivity> UserActivities { get; set; }  // virtual keyword is used for related data, required for lazyloading
+
+    public virtual ICollection<Comment> Comments { get; set; }
   }
 }

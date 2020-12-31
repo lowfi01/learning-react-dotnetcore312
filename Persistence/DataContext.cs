@@ -21,6 +21,8 @@ namespace Persistence
 
     public DbSet<Photo> Photo { get; set; }
 
+    public DbSet<Comment> Comments { get; set; }
+
     // Generate Seed Data
     // - Overrides method from DbContext
     // - During creation of new migration,
