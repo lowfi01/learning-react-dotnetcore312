@@ -115,4 +115,6 @@ export default class ProfileStore {
       })
     }
   }
+
+  // @action updateProfile = async (displayName: string, userName: string, )
 }

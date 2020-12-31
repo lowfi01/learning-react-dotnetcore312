@@ -11,3 +11,9 @@ export interface IPhoto {
   url: string,
   isMain: boolean,
 }
+
+export interface IEditProfile {
+  UserName: string;
+  DisplayName: string;
+  Bio: string;
+}
