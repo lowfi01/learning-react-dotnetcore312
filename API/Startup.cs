@@ -1,5 +1,6 @@
 using System.Text;
 using API.Middleware;
+using API.SignalR;
 using Application.Activities;
 using Application.Interfaces;
 using AutoMapper;
@@ -132,6 +133,9 @@ namespace API
       // Automapper as a service -- dependency injection
       services.AddAutoMapper(typeof(List.Handler).Assembly); // just needs a location of the project where it can find automapping profiles
 
+      // Adding SingleR for web socket implemention with comments
+      services.AddSignalR();
+
       // Inject IJwtGenerator * Generator class into our application.
       // - this will make avaiable out IJwtGenerator & the JwtGenerator class, which implements createtoken(AppUser user) => string;
       // Note: we inject these services, through the contructors of our classes :D  className(inject service); we
@@ -194,10 +198,11 @@ namespace API
       app.UseAuthorization();
 
 
-
+      // Router
       app.UseEndpoints(endpoints =>
       {
         endpoints.MapControllers();
+        endpoints.MapHub<ChatHub>("/chat"); // (SignalR)redirect all requests to the /chat endpoint to chathub
       });
     }
   }
