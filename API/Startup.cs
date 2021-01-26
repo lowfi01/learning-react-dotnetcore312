@@ -1,4 +1,5 @@
 using System.Text;
+using System.Threading.Tasks;
 using API.Middleware;
 using API.SignalR;
 using Application.Activities;
@@ -97,6 +98,21 @@ namespace API
             IssuerSigningKey = key, // check token key is valid (last part of the token)
             ValidateAudience = false, // note - we could use the url of the request
             ValidateIssuer = false
+          };
+          // add new options for signal r to recieve token
+          opt.Events = new JwtBearerEvents
+          {
+            OnMessageReceived = context =>
+            {
+              var accessToken = context.Request.Query["access_token"]; // note: access_token is what is set from the client side.
+              var path = context.HttpContext.Request.Path;
+              if (!string.IsNullOrEmpty(accessToken)
+              && (path.StartsWithSegments("/chat")))
+              {
+                context.Token = accessToken;
+              }
+              return Task.CompletedTask;
+            }
           };
         });
 

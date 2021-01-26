@@ -26,7 +26,7 @@ namespace API.SignalR
       // send comment to be saved to database
       var comment = await _mediator.Send(command);
 
-      // Send comment to all connected/listening clients listen to this hub (ui)
+      // Send comment to all connected/listening clients listen to  hub (ui)
       await Clients.All.SendAsync("ReceiveComment", comment);
     }
   }

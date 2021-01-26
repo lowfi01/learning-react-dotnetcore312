@@ -23,6 +23,7 @@ const ActivityItem: React.FC<IProps> = ({ activity }) => {
     isHost,
     isGoing
   } = activity;
+
   // Note: this activity is passed down & will have an attendees array attached
   const host = activity.attendees.filter(x => x.isHost)[0];
   return (
