@@ -5,6 +5,7 @@ import { history } from "../..";
 import { toast } from "react-toastify";
 import { RootStore } from "./rootStore";
 import { setActivityProps, createAttendee } from "../common/util/util";
+import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
 // State management
 export default class ActivityStore {
@@ -26,6 +27,34 @@ export default class ActivityStore {
   @observable submitting = false; // loading state for our submit buttons
   @observable targetedButton = ""; // Capture current button for loading icon animation
   @observable loading = false;
+  @observable.ref hubConnection: HubConnection | null = null;
+
+  // setup signalR & create a connection
+  @action createHubConnection = () => {
+    // build config + logging & Connection to chathub
+    this.hubConnection = new HubConnectionBuilder()
+     .withUrl('http://localhost:5000/chat', {
+       // options
+       accessTokenFactory: () => this.rootStore.commonStore.token!
+     })
+     .configureLogging(LogLevel.Information)
+     .build();
+
+    // configure how signalR starts
+    this.hubConnection.start()
+    .then(() => console.log(this.hubConnection!.state))
+    .catch(err => console.log("Error establishing connection to chathub: ", err))
+
+    // recieving comments back from chathub
+    this.hubConnection.on('ReceiveComment', comment => {
+      this.selectedActivity!.comments.push(comment);
+    })
+  }
+
+  // stop connection
+  @action stopHubConnectioin = () => {
+    this.hubConnection!.stop(); // turns off hubchat connection
+  }
 
   // Computed property
   // - calculating values based on already existing observable data.
