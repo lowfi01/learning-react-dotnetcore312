@@ -52,9 +52,22 @@ export default class ActivityStore {
   }
 
   // stop connection
-  @action stopHubConnectioin = () => {
+  @action stopHubConnection = () => {
     this.hubConnection!.stop(); // turns off hubchat connection
   }
+
+  // add comment with the provided values from form.
+  @action addComment = async(values: any) => {
+    values.activityId = this.selectedActivity!.id;
+    try {
+      // this will invoke the method from our server (SendComment method... which takes a comment.command object).
+      // Note: we do not need to use axios.. we just need to invoke the method :)
+      await this.hubConnection!.invoke('SendComment', values);
+    } catch (error) {
+      console.log(`Error adding comment: ${error}`)
+    }
+  }
+
 
   // Computed property
   // - calculating values based on already existing observable data.
