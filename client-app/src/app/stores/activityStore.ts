@@ -47,7 +47,9 @@ export default class ActivityStore {
 
     // recieving comments back from chathub
     this.hubConnection.on('ReceiveComment', comment => {
-      this.selectedActivity!.comments.push(comment);
+      runInAction(() => {
+        this.selectedActivity!.comments.push(comment);
+      })
     })
   }
 
