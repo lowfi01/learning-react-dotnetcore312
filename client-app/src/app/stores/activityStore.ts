@@ -30,7 +30,7 @@ export default class ActivityStore {
   @observable.ref hubConnection: HubConnection | null = null;
 
   // setup signalR & create a connection
-  @action createHubConnection = () => {
+  @action createHubConnection = (activityId: string) => {
     // build config + logging & Connection to chathub
     this.hubConnection = new HubConnectionBuilder()
      .withUrl('http://localhost:5000/chat', {
@@ -43,6 +43,10 @@ export default class ActivityStore {
     // configure how signalR starts
     this.hubConnection.start()
     .then(() => console.log(this.hubConnection!.state))
+    .then(() => {
+      console.log("Attempting to join group");
+      if (this.hubConnection!.state === 'Connected') this.hubConnection!.invoke('AddToGroup', activityId);
+    })
     .catch(err => console.log("Error establishing connection to chathub: ", err))
 
     // recieving comments back from chathub
@@ -51,11 +55,25 @@ export default class ActivityStore {
         this.selectedActivity!.comments.push(comment);
       })
     })
+
+    this.hubConnection.on('Send', message => {
+      toast.info(message); // Debugging - this should show when someone joins the group... remove for prod
+    })
   }
 
   // stop connection
   @action stopHubConnection = () => {
-    this.hubConnection!.stop(); // turns off hubchat connection
+    this.hubConnection?.invoke('RemoveFromGroup', this.selectedActivity?.id)
+    .then(() => {
+      // only on succesfully removed from group do we stop the connection
+      this.hubConnection!.stop(); // turns off hubchat connection
+    })
+    .then(() => {
+      console.log("User has been removed from group: ", this.selectedActivity?.id)
+    })
+    .catch((err) => {
+      console.log("something had gone wrong ", err)
+    });
   }
 
   // add comment with the provided values from form.
