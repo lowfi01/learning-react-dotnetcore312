@@ -17,9 +17,7 @@ namespace API.SignalR
 
     public async Task SendComment(Create.Command command)
     {
-
-      // fetch user from Context hub -- not created yet in this commit
-      var username = Context.User?.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+      string username = GetUsername();
 
       command.UserName = username;
 
@@ -27,7 +25,32 @@ namespace API.SignalR
       var comment = await _mediator.Send(command);
 
       // Send comment to all connected/listening clients listen to  hub (ui)
-      await Clients.All.SendAsync("ReceiveComment", comment);
+      await Clients.Group(command.ActivityId.ToString()).SendAsync("ReceiveComment", comment);
     }
+
+    private string GetUsername()
+    {
+      // fetch user from Context hub -- not created yet in this commit
+      return Context.User?.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+    }
+
+    public async Task AddToGroup(string groupName)
+    {
+      await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+
+      var username = GetUsername();
+
+      await Clients.Group(groupName).SendAsync("Send", $"{username} has joined the group");
+    }
+
+    public async Task RemoveFromGroup(string groupName)
+    {
+      await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
+
+      var username = GetUsername();
+
+      await Clients.Group(groupName).SendAsync("Send", $"{username} has left the group");
+    }
+
   }
 }
